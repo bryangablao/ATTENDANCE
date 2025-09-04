@@ -14,40 +14,108 @@
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
         min-height: 100vh;
-        padding: 20px;
-    }
-    .header {
-        max-width: 900px;
-        margin: 0 auto 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: white;
-    }
-    .header h1 {
-        font-size: 1.8rem;
-    }
-    .header .back-btn {
-        background: #fff;
-        color: #000dff;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 6px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-    .header .back-btn:hover {
-        background: #e6e6e6;
+        overflow-x: hidden;
     }
 
+    /* HEADER */
+    header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 60px;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        z-index: 1100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .site-title {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: #fff;
+        user-select: none;
+    }
+
+    /* Hamburger */
+    .hamburger {
+        width: 35px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        z-index: 1200;
+    }
+    .hamburger div {
+        height: 4px;
+        background-color: white;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+    .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
+    .hamburger.active div:nth-child(2) { opacity: 0; }
+    .hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+
+    /* Sidebar */
+    nav.sidebar {
+        position: fixed;
+        top: 60px;
+        left: -270px;
+        width: 270px;
+        height: calc(100vh - 60px);
+        background: rgba(0, 0, 0, 0.85);
+        box-shadow: 2px 0 12px rgba(0,0,0,0.7);
+        padding: 30px 20px 20px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        transition: left 0.3s ease;
+        z-index: 1099;
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+    nav.sidebar.open { left: 0; }
+    nav.sidebar a, nav.sidebar button.logout-btn {
+        text-decoration: none;
+        color: #ddd;
+        font-weight: 600;
+        font-size: 1.15rem;
+        padding: 14px 20px;
+        border-radius: 10px;
+        transition: background-color 0.3s, color 0.3s;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        text-align: left;
+        user-select: none;
+    }
+    nav.sidebar a:hover, nav.sidebar button.logout-btn:hover {
+        background-color: #007bff;
+        color: white;
+        box-shadow: 0 0 8px #007bff;
+    }
+    nav.sidebar a.active {
+        background-color: #0056b3;
+        color: white;
+        box-shadow: 0 0 10px #0056b3;
+    }
+    nav.sidebar button.logout-btn { margin-top: auto; width: 100%; }
+
+    /* Container */
     .container {
         background: #fff;
         border-radius: 12px;
         max-width: 900px;
-        margin: 0 auto;
+        margin: 100px auto 30px auto;
         padding: 20px;
         box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        transition: margin-left 0.3s ease;
     }
+    .container.shifted { margin-left: 270px; }
 
     .actions {
         display: flex;
@@ -113,23 +181,33 @@
         transform: scale(1.2);
     }
 
-    @media (max-width: 600px) {
-        .header h1 { font-size: 1.5rem; }
-        .notification { flex-direction: column; align-items: flex-start; }
-        .notif-actions { align-self: flex-end; }
+    @media (max-width: 720px) {
+        .container.shifted { margin-left: 0; }
+        nav.sidebar { width: 220px; }
     }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header">
-    <h1>Attendance Notifications</h1>
-    <button class="back-btn" onclick="window.location.href='home.html'">Back</button>
-</div>
+<header>
+  <div class="hamburger" id="hamburger">
+    <div></div><div></div><div></div>
+  </div>
+  <div class="site-title">Attendance System</div>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <a href="home.html">HOME</a>
+  <a href="profile.html">PROFILE</a>
+  <a href="payroll.html">PAYROLL</a>
+  <a href="friendlist.html">FRIENDLIST</a>
+  <a href="mailbox.html">MAILBOX</a>
+  <a href="notification.html" class="active">NOTIFICATION</a>
+  <button class="logout-btn" id="logoutBtn">LOG OUT</button>
+</nav>
 
 <!-- Notifications Container -->
-<div class="container">
+<div class="container" id="contentArea">
     <!-- Action Buttons -->
     <div class="actions">
         <button class="mark-read" onclick="markAllRead()">Mark All as Read</button>
@@ -193,6 +271,27 @@
 </div>
 
 <script>
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const contentArea = document.getElementById('contentArea');
+const logoutBtn = document.getElementById('logoutBtn');
+
+function toggleMenu() {
+  hamburger.classList.toggle('active');
+  sidebar.classList.toggle('open');
+  if(window.innerWidth > 720) {
+    contentArea.classList.toggle('shifted');
+  }
+}
+hamburger.addEventListener('click', toggleMenu);
+
+// Logout
+logoutBtn.addEventListener('click', () => {
+  if (confirm('Are you sure you want to logout?')) {
+    window.location.href = "index.html";
+  }
+});
+
 function removeNotif(btn) {
     btn.closest('.notification').remove();
 }

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register - Attendance System</title>
+  <style>
+    * { box-sizing: border-box; }
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333; overflow-x: hidden;
+    }
+    body {
+      background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+      position: relative; min-height: 100vh;
+      display: flex; justify-content: center; align-items: flex-start;
+      padding-top: 40px;
+    }
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      opacity: 0.15;
+      filter: blur(100px);
+      z-index: 0;
+    }
+    body::before {
+      width: 300px; height: 300px;
+      background: #ff6b6b;
+      top: 20%; left: 10%;
+    }
+    body::after {
+      width: 400px; height: 400px;
+      background: #ffd93b;
+      bottom: 10%; right: 15%;
+    }
+    .container {
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.95);
+      margin: 0 20px 40px 20px;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      position: relative;
+      z-index: 1;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #2c3e50;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="date"] {
+      padding: 10px;
+      margin-bottom: 18px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+    button {
+      padding: 12px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .links {
+      text-align: center;
+      font-size: 0.9rem;
+      margin-bottom: 25px;
+    }
+    .links a {
+      color: #007bff;
+      text-decoration: none;
+      transition: text-decoration 0.2s;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    .description {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.5;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+
+    .phone-input {
+      display: flex;
+      margin-bottom: 18px;
+    }
+    select.country-code {
+      flex: 0 0 90px;
+      border-radius: 6px 0 0 6px;
+      border: 1px solid #ccc;
+      border-right: none;
+      padding: 10px 8px;
+      font-size: 1rem;
+      background-color: white;
+      cursor: pointer;
+      transition: border-color 0.3s;
+      height: 42px;
+    }
+    input.local-number {
+      flex: 1;
+      border-radius: 0 6px 6px 0;
+      border: 1px solid #ccc;
+      border-left: none;
+      padding: 10px 12px;
+      font-size: 1rem;
+      height: 42px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+
+    .birthdate-gender {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .birthdate, .gender {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .gender select,
+    .birthdate input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-top: 6px;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .name-fields {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .name-fields input {
+      flex: 1;
+    }
+
+    .capitalize {
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 450px) {
+      .phone-input {
+        flex-direction: column;
+      }
+      select.country-code,
+      input.local-number {
+        flex: none;
+        width: 100%;
+        border-radius: 6px;
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        height: auto;
+        margin-bottom: 10px;
+      }
+      .birthdate-gender {
+        flex-direction: column;
+      }
+      .name-fields {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Register for Attendance System</h1>
+
+    <form action="/register" method="POST">
+     
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="Choose a username" pattern="[a-z0-9]+" title="Only lowercase letters and numbers are allowed" required />
+
+      <label for="first-name">First Name</label>
+      <input type="text" id="first-name" name="first-name" class="capitalize" placeholder="First Name" required />
+
+      <label for="middle-name">Middle Name (Optional)</label>
+      <input type="text" id="middle-name" name="middle-name" class="capitalize" placeholder="Middle Name" />
+
+      <label for="last-name">Last Name</label>
+      <input type="text" id="last-name" name="last-name" class="capitalize" placeholder="Last Name" required />
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="Your email address" required />
+
+      <label for="phone">Phone Number</label>
+      <div class="phone-input">
+        <select name="country-code" class="country-code" required>
+          <option value="+63" selected>PH +63</option>
+          <option value="+1">US +1</option>
+          <option value="+44">UK +44</option>
+          <option value="+91">IN +91</option>
+          <option value="+81">JP +81</option>
+          <option value="+61">AU +61</option>
+        </select>
+        <input type="tel" name="local-number" class="local-number" placeholder="Your phone number" pattern="[0-9]{10,15}" required />
+      </div>
+
+      <div class="birthdate-gender">
+        <div class="birthdate">
+          <label for="birthdate">Birthdate</label>
+          <input type="date" id="birthdate" name="birthdate" required />
+        </div>
+        <div class="gender">
+          <label for="gender">Gender</label>
+          <select name="gender" id="gender" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Create a password" required />
+
+      <button type="submit">Register</button>
+     
+      <div class="links">
+        <a href="index.html">Already have an account? Login</a>
+      </div>
+
+      <div class="description">
+        By registering for the Attendance System, you will be able to log in, track your attendance records, and manage your personal details.  
+        Please review our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> before signing up.
+      </div>
+    </form>
+  </div>
+</body>
+</html>

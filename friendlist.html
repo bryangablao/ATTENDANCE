@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friend List - Attendance System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body, html {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: #f0f0f0;
+  }
+
+  /* Gradient blobs */
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    opacity: 0.15;
+    filter: blur(100px);
+    z-index: 0;
+  }
+  body::before { width: 300px; height: 300px; background: #ff6b6b; top: 20%; left: 10%; }
+  body::after { width: 400px; height: 400px; background: #ffd93b; bottom: 10%; right: 15%; }
+
+  /* HEADER */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 60px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+  .site-title {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #fff;
+    user-select: none;
+  }
+
+  /* Hamburger */
+  .hamburger {
+    width: 35px; height: 30px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1200;
+  }
+  .hamburger div {
+    height: 4px;
+    background-color: white;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+  .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
+  .hamburger.active div:nth-child(2) { opacity: 0; }
+  .hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+
+  /* Sidebar */
+  nav.sidebar {
+    position: fixed;
+    top: 60px;
+    left: -270px;
+    width: 270px;
+    height: calc(100vh - 60px);
+    background: rgba(0, 0, 0, 0.85);
+    box-shadow: 2px 0 12px rgba(0,0,0,0.7);
+    padding: 30px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: left 0.3s ease;
+    z-index: 1099;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+  nav.sidebar.open { left: 0; }
+  nav.sidebar a, nav.sidebar button.logout-btn {
+    text-decoration: none;
+    color: #ddd;
+    font-weight: 600;
+    font-size: 1.15rem;
+    padding: 14px 20px;
+    border-radius: 10px;
+    transition: background-color 0.3s, color 0.3s;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    text-align: left;
+    user-select: none;
+  }
+  nav.sidebar a:hover, nav.sidebar button.logout-btn:hover {
+    background-color: #007bff;
+    color: white;
+    box-shadow: 0 0 8px #007bff;
+  }
+  nav.sidebar a.active {
+    background-color: #0056b3;
+    color: white;
+    box-shadow: 0 0 10px #0056b3;
+  }
+  nav.sidebar button.logout-btn { margin-top: auto; width: 100%; }
+
+  /* Friend list container */
+  .container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 900px;
+    width: 90%;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    margin: 100px auto 40px auto;
+    color: #2c3e50;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Search */
+  .search-bar {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+  }
+
+  /* Friend list */
+  ul.friend-list { list-style: none; margin: 0; padding: 0; }
+  .friend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+  }
+  .friend-info {
+    display: flex; align-items: center; gap: 15px;
+  }
+  .friend-info img {
+    width: 40px; height: 40px; border-radius: 50%;
+  }
+  .friend-name { font-weight: bold; font-size: 1.1rem; }
+  .friend-status { font-size: 0.9rem; color: gray; }
+  .online { color: green; }
+  .offline { color: gray; }
+
+  /* Actions */
+  .actions button {
+    background: none; border: none;
+    font-size: 1.3rem; cursor: pointer;
+    margin-left: 10px;
+    transition: transform 0.2s;
+  }
+  .actions button:hover { transform: scale(1.2); }
+  .msg-btn { color: #000dff; }
+  .remove-btn { color: #ff0000; }
+
+  /* Add friend button */
+  .add-friend {
+    position: fixed;
+    bottom: 30px; right: 30px;
+    background: #000dff;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 60px; height: 60px;
+    font-size: 2rem; cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    transition: background 0.3s;
+    z-index: 1001;
+  }
+  .add-friend:hover { background: #4b5eff; }
+
+  @media (max-width: 720px) {
+    nav.sidebar { width: 220px; }
+    .container { width: 95%; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
+  <div class="site-title">Attendance System</div>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <a href="home.html">HOME</a>
+  <a href="profile.html">PROFILE</a>
+  <a href="payroll.html">PAYROLL</a>
+  <a href="friendlist.html" class="active">FRIENDLIST</a>
+  <a href="mailbox.html">MAILBOX</a>
+  <a href="notification.html">NOTIFICATION</a>
+  <button class="logout-btn" onclick="window.location.href='index.html'">LOG OUT</button>
+</nav>
+
+<!-- Friend List Container -->
+<div class="container">
+  <h1>Friend List</h1>
+  <input type="text" id="searchFriend" class="search-bar" placeholder="Search friends..." onkeyup="filterFriends()">
+
+  <ul id="friendList" class="friend-list">
+    <li class="friend-item">
+      <div class="friend-info">
+        <img src="https://via.placeholder.com/40" alt="avatar">
+        <div>
+          <div class="friend-name">Noir</div>
+          <div class="friend-status online">Online</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="msg-btn" onclick="alert('Message Noir')">💬</button>
+        <button class="remove-btn" onclick="removeFriend(this)">❌</button>
+      </div>
+    </li>
+    <li class="friend-item">
+      <div class="friend-info">
+        <img src="https://via.placeholder.com/40" alt="avatar">
+        <div>
+          <div class="friend-name">Bryan</div>
+          <div class="friend-status offline">Offline</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="msg-btn" onclick="alert('Message Bryan')">💬</button>
+        <button class="remove-btn" onclick="removeFriend(this)">❌</button>
+      </div>
+    </li>
+    <li class="friend-item">
+      <div class="friend-info">
+        <img src="https://via.placeholder.com/40" alt="avatar">
+        <div>
+          <div class="friend-name">Alice</div>
+          <div class="friend-status online">Online</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="msg-btn" onclick="alert('Message Alice')">💬</button>
+        <button class="remove-btn" onclick="removeFriend(this)">❌</button>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- Add Friend Button -->
+<button class="add-friend" onclick="alert('Add Friend feature coming soon!')">+</button>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+
+// Toggle sidebar
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  sidebar.classList.toggle('open');
+});
+
+// Remove friend
+function removeFriend(btn) {
+  btn.closest('li').remove();
+}
+
+// Filter friends
+function filterFriends() {
+  let input = document.getElementById('searchFriend').value.toLowerCase();
+  let items = document.querySelectorAll('#friendList li');
+  items.forEach(item => {
+    let name = item.querySelector('.friend-name').innerText.toLowerCase();
+    item.style.display = name.includes(input) ? 'flex' : 'none';
+  });
+}
+</script>
+
+</body>
+</html>

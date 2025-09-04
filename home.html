@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Dashboard - Attendance System</title>
 <style>
-  /* Reset and base */
   * { box-sizing: border-box; }
   body, html {
     margin: 0; padding: 0; height: 100%;
@@ -22,18 +21,10 @@
     filter: blur(100px);
     z-index: 0;
   }
-  body::before {
-    width: 300px; height: 300px;
-    background: #ff6b6b;
-    top: 20%; left: 10%;
-  }
-  body::after {
-    width: 400px; height: 400px;
-    background: #ffd93b;
-    bottom: 10%; right: 15%;
-  }
+  body::before { width: 300px; height: 300px; background: #ff6b6b; top: 20%; left: 10%; }
+  body::after { width: 400px; height: 400px; background: #ffd93b; bottom: 10%; right: 15%; }
 
-  /* HEADER BAR */
+  /* HEADER */
   header {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -46,8 +37,6 @@
     z-index: 1100;
     box-shadow: 0 2px 8px rgba(0,0,0,0.5);
   }
-
-  /* Site Title in header */
   .site-title {
     flex-grow: 1;
     text-align: center;
@@ -58,7 +47,7 @@
     user-select: none;
   }
 
-  /* Hamburger menu button */
+  /* Hamburger */
   .hamburger {
     width: 35px;
     height: 30px;
@@ -74,17 +63,11 @@
     border-radius: 2px;
     transition: all 0.3s ease;
   }
-  .hamburger.active div:nth-child(1) {
-    transform: rotate(45deg) translate(7px, 7px);
-  }
-  .hamburger.active div:nth-child(2) {
-    opacity: 0;
-  }
-  .hamburger.active div:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
-  }
+  .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
+  .hamburger.active div:nth-child(2) { opacity: 0; }
+  .hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
 
-  /* Sidebar menu */
+  /* Sidebar */
   nav.sidebar {
     position: fixed;
     top: 60px;
@@ -102,9 +85,7 @@
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
   }
-  nav.sidebar.open {
-    left: 0;
-  }
+  nav.sidebar.open { left: 0; }
   nav.sidebar a, nav.sidebar button.logout-btn {
     text-decoration: none;
     color: #ddd;
@@ -129,12 +110,9 @@
     color: white;
     box-shadow: 0 0 10px #0056b3;
   }
-  nav.sidebar button.logout-btn {
-    margin-top: auto;
-    width: 100%;
-  }
+  nav.sidebar button.logout-btn { margin-top: auto; width: 100%; }
 
-  /* Content area */
+  /* Content */
   main.content {
     margin: 80px auto 40px auto;
     max-width: 720px;
@@ -145,130 +123,91 @@
     color: #2c3e50;
     transition: margin-left 0.3s ease;
   }
-  main.content.shifted {
-    margin-left: 270px;
-  }
+  main.content.shifted { margin-left: 270px; }
 
-  h1 {
-    margin-top: 0;
-    font-weight: 700;
-    font-size: 2rem;
-    margin-bottom: 15px;
-    user-select: none;
-  }
-  p {
-    font-size: 1.15rem;
-    line-height: 1.6;
-  }
+  h1 { margin-top: 0; font-weight: 700; font-size: 2rem; margin-bottom: 15px; }
+  p { font-size: 1.15rem; line-height: 1.6; }
 
   @media (max-width: 720px) {
-    main.content.shifted {
-      margin-left: 0;
-    }
-    nav.sidebar {
-      width: 220px;
-      padding-top: 20px;
-      top: 60px;
-      height: calc(100vh - 60px);
-    }
+    main.content.shifted { margin-left: 0; }
+    nav.sidebar { width: 220px; }
   }
 </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-    <div class="site-title">Attendance System</div>
-  </header>
+<header>
+  <div class="hamburger" id="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
+    <div></div><div></div><div></div>
+  </div>
+  <div class="site-title">Attendance System</div>
+</header>
 
-  <!-- Sidebar menu -->
-  <nav class="sidebar" id="sidebar" aria-label="Main navigation">
-    <a href="#" data-page="home" class="active">Dashboard</a>
-    <a href="#" data-page="profile">My Profile</a>
-    <a href="#" data-page="attendance">Attendance Records</a>
-    <a href="#" data-page="reports">Reports</a>
-    <a href="#" data-page="notifications">Notifications</a>
-    <button class="logout-btn" id="logoutBtn">Logout</button>
-  </nav>
+<nav class="sidebar" id="sidebar">
+  <a href="#" data-page="home" class="active">HOME</a>
+  <a href="#" data-page="profile">PROFILE</a>
+  <a href="#" data-page="attendance">ATTENDANCE</a>
+  <a href="#" data-page="reports">REPORTS</a>
+  <a href="#" data-page="notifications">NOTIFICATIONS</a>
+  <button class="logout-btn" id="logoutBtn">LOGOUT</button>
+</nav>
 
-  <!-- Main content area -->
-  <main class="content" id="contentArea">
-    <h1>Welcome to Attendance Dashboard</h1>
-    <p>This is your main dashboard. From here, you can mark attendance, view your history, check reports, and manage your profile.</p>
-  </main>
+<main class="content" id="contentArea">
+  <h1>Welcome to the Attendance Dashboard</h1>
+  <p>This is your dashboard where you can track attendance, view reports, and manage your account.</p>
+</main>
 
 <script>
-  const hamburger = document.getElementById('hamburger');
-  const sidebar = document.getElementById('sidebar');
-  const contentArea = document.getElementById('contentArea');
-  const logoutBtn = document.getElementById('logoutBtn');
-  const navLinks = sidebar.querySelectorAll('a[data-page]');
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const contentArea = document.getElementById('contentArea');
+const logoutBtn = document.getElementById('logoutBtn');
+const navLinks = sidebar.querySelectorAll('a[data-page]');
 
-  function toggleMenu() {
-    hamburger.classList.toggle('active');
-    sidebar.classList.toggle('open');
-    if(window.innerWidth > 720) {
-      contentArea.classList.toggle('shifted');
-    }
+// Toggle sidebar
+function toggleMenu() {
+  hamburger.classList.toggle('active');
+  sidebar.classList.toggle('open');
+  if(window.innerWidth > 720) {
+    contentArea.classList.toggle('shifted');
   }
-  hamburger.addEventListener('click', toggleMenu);
-  hamburger.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggleMenu();
+}
+hamburger.addEventListener('click', toggleMenu);
+
+// Page contents
+const pageContents = {
+  home: { title: 'Welcome to the Attendance Dashboard', content: 'This is your dashboard where you can track attendance, view reports, and manage your account.' },
+  profile: { title: 'Profile', content: 'Manage your profile information and preferences here.' },
+  attendance: { title: 'Attendance', content: 'View and mark your daily attendance records.' },
+  reports: { title: 'Reports', content: 'Generate and review attendance reports.' },
+  notifications: { title: 'Notifications', content: 'See important updates and alerts from the system.' }
+};
+
+// Handle nav clicks
+navLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const page = link.getAttribute('data-page');
+    navLinks.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    if (pageContents[page]) {
+      contentArea.innerHTML = `<h1>${pageContents[page].title}</h1><p>${pageContents[page].content}</p>`;
+    }
+    // Close menu only on small screens
+    if(window.innerWidth <= 720) {
+      hamburger.classList.remove('active');
+      sidebar.classList.remove('open');
     }
   });
+});
 
-  const pageContents = {
-    home: {
-      title: 'Welcome to Attendance Dashboard',
-      content: 'This is your main dashboard. From here, you can mark attendance, view your history, check reports, and manage your profile.'
-    },
-    profile: {
-      title: 'My Profile',
-      content: 'Manage your personal details, update your password, and review your information.'
-    },
-    attendance: {
-      title: 'Attendance Records',
-      content: 'View your daily attendance logs, check-ins, and check-outs.'
-    },
-    reports: {
-      title: 'Reports',
-      content: 'Generate and review detailed attendance reports for specific dates.'
-    },
-    notifications: {
-      title: 'Notifications',
-      content: 'Stay updated with important announcements and alerts.'
-    }
-  };
-
-  navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const page = link.getAttribute('data-page');
-
-      navLinks.forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-
-      if (pageContents[page]) {
-        contentArea.innerHTML = `<h1>${pageContents[page].title}</h1><p>${pageContents[page].content}</p>`;
-      }
-
-      toggleMenu();
-    });
-  });
-
-  logoutBtn.addEventListener('click', () => {
-    if (confirm('Are you sure you want to logout?')) {
-      alert('Logging out...');
-      // window.location.href = 'index.html'; // redirect to login page
-    }
-  });
+// Logout
+logoutBtn.addEventListener('click', () => {
+  if (confirm('Are you sure you want to logout?')) {
+    alert('Logging out...');
+    // window.location.href = '/logout';
+  }
+});
 </script>
 
 </body>

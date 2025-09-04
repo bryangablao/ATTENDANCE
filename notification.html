@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATTENDANCE</title>
+
+<!-- Favicon / Logo -->
+<link rel="icon" type="image/png" href="image/attendancelogo.png" />
+
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+    .header {
+        max-width: 900px;
+        margin: 0 auto 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    .header .back-btn {
+        background: #fff;
+        color: #000dff;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .header .back-btn:hover {
+        background: #e6e6e6;
+    }
+
+    .container {
+        background: #fff;
+        border-radius: 12px;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    .actions button {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    .mark-read { background: #007bff; color: white; }
+    .mark-read:hover { background: #0056b3; }
+    .clear-all { background: #dc3545; color: white; }
+    .clear-all:hover { background: #a71d2a; }
+
+    /* Notification Card */
+    .notification {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f9f9f9;
+        padding: 14px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        transition: background 0.3s;
+    }
+    .notification.unread {
+        background: #e6f0ff;
+        font-weight: bold;
+    }
+    .notif-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    .notif-icon {
+        font-size: 1.8rem;
+    }
+    .notif-text {
+        display: flex;
+        flex-direction: column;
+    }
+    .notif-title {
+        font-size: 1rem;
+    }
+    .notif-time {
+        font-size: 0.8rem;
+        color: gray;
+    }
+    .notif-actions button {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #ff0000;
+    }
+    .notif-actions button:hover {
+        transform: scale(1.2);
+    }
+
+    @media (max-width: 600px) {
+        .header h1 { font-size: 1.5rem; }
+        .notification { flex-direction: column; align-items: flex-start; }
+        .notif-actions { align-self: flex-end; }
+    }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <h1>Attendance Notifications</h1>
+    <button class="back-btn" onclick="window.location.href='home.html'">Back</button>
+</div>
+
+<!-- Notifications Container -->
+<div class="container">
+    <!-- Action Buttons -->
+    <div class="actions">
+        <button class="mark-read" onclick="markAllRead()">Mark All as Read</button>
+        <button class="clear-all" onclick="clearAll()">Clear All</button>
+    </div>
+
+    <!-- Notification Items -->
+    <div id="notifications">
+        <div class="notification unread">
+            <div class="notif-info">
+                <div class="notif-icon">⏰</div>
+                <div class="notif-text">
+                    <div class="notif-title">You logged in late today (9:15 AM)</div>
+                    <div class="notif-time">5 mins ago</div>
+                </div>
+            </div>
+            <div class="notif-actions">
+                <button onclick="removeNotif(this)">❌</button>
+            </div>
+        </div>
+
+        <div class="notification unread">
+            <div class="notif-info">
+                <div class="notif-icon">📋</div>
+                <div class="notif-text">
+                    <div class="notif-title">Your August attendance report is ready</div>
+                    <div class="notif-time">1 hour ago</div>
+                </div>
+            </div>
+            <div class="notif-actions">
+                <button onclick="removeNotif(this)">❌</button>
+            </div>
+        </div>
+
+        <div class="notification">
+            <div class="notif-info">
+                <div class="notif-icon">💼</div>
+                <div class="notif-text">
+                    <div class="notif-title">Payroll for August has been processed</div>
+                    <div class="notif-time">Yesterday</div>
+                </div>
+            </div>
+            <div class="notif-actions">
+                <button onclick="removeNotif(this)">❌</button>
+            </div>
+        </div>
+
+        <div class="notification">
+            <div class="notif-info">
+                <div class="notif-icon">📅</div>
+                <div class="notif-text">
+                    <div class="notif-title">Staff meeting scheduled on Sept 10, 2025</div>
+                    <div class="notif-time">2 days ago</div>
+                </div>
+            </div>
+            <div class="notif-actions">
+                <button onclick="removeNotif(this)">❌</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function removeNotif(btn) {
+    btn.closest('.notification').remove();
+}
+function markAllRead() {
+    document.querySelectorAll('.notification').forEach(n => n.classList.remove('unread'));
+}
+function clearAll() {
+    document.getElementById('notifications').innerHTML = '';
+}
+</script>
+
+</body>
+</html>

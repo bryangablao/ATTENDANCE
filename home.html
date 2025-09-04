@@ -146,15 +146,16 @@
 <nav class="sidebar" id="sidebar">
   <a href="#" data-page="home" class="active">HOME</a>
   <a href="#" data-page="profile">PROFILE</a>
-  <a href="#" data-page="attendance">ATTENDANCE</a>
-  <a href="#" data-page="reports">REPORTS</a>
-  <a href="#" data-page="notifications">NOTIFICATIONS</a>
+  <a href="#" data-page="payroll">PAYROLL</a>
+  <a href="#" data-page="friendlist">FRIENDLIST</a>
+  <a href="#" data-page="mailbox">MAILBOX</a>
+  <a href="#" data-page="notification">NOTIFICATION</a>
   <button class="logout-btn" id="logoutBtn">LOGOUT</button>
 </nav>
 
 <main class="content" id="contentArea">
   <h1>Welcome to the Attendance Dashboard</h1>
-  <p>This is your dashboard where you can track attendance, view reports, and manage your account.</p>
+  <p>This is your dashboard where you can track attendance, manage payroll, and stay updated with notifications.</p>
 </main>
 
 <script>
@@ -176,11 +177,12 @@ hamburger.addEventListener('click', toggleMenu);
 
 // Page contents
 const pageContents = {
-  home: { title: 'Welcome to the Attendance Dashboard', content: 'This is your dashboard where you can track attendance, view reports, and manage your account.' },
+  home: { title: 'Welcome to the Attendance Dashboard', content: 'This is your dashboard where you can track attendance, manage payroll, and stay updated with notifications.' },
   profile: { title: 'Profile', content: 'Manage your profile information and preferences here.' },
-  attendance: { title: 'Attendance', content: 'View and mark your daily attendance records.' },
-  reports: { title: 'Reports', content: 'Generate and review attendance reports.' },
-  notifications: { title: 'Notifications', content: 'See important updates and alerts from the system.' }
+  payroll: { title: 'Payroll', content: 'View and manage your payroll information securely.' },
+  friendlist: { title: 'Friendlist', content: 'See and manage your friends and colleagues.' },
+  mailbox: { title: 'Mailbox', content: 'Check your messages and communicate with others.' },
+  notification: { title: 'Notification', content: 'Review your recent notifications and system alerts.' }
 };
 
 // Handle nav clicks

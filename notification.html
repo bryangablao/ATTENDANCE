@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ATTENDANCE</title>
 
-<!-- Favicon -->
+<!-- Favicon / Logo -->
 <link rel="icon" type="image/png" href="image/attendancelogo.png" />
 
 <style>
@@ -111,60 +111,79 @@
         border-radius: 12px;
         max-width: 900px;
         margin: 100px auto 30px auto;
-        padding: 30px;
+        padding: 20px;
         box-shadow: 0 8px 24px rgba(0,0,0,0.15);
         transition: margin-left 0.3s ease;
     }
     .container.shifted { margin-left: 270px; }
 
-    /* Profile Section */
-    .profile-header {
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+    .actions button {
+        padding: 8px 14px;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        font-weight: 600;
+    }
+    .mark-read { background: #007bff; color: white; }
+    .mark-read:hover { background: #0056b3; }
+    .clear-all { background: #dc3545; color: white; }
+    .clear-all:hover { background: #a71d2a; }
+
+    /* Notification Card */
+    .notification {
         display: flex;
         align-items: center;
-        gap: 20px;
-        margin-bottom: 25px;
+        justify-content: space-between;
+        background: #f9f9f9;
+        padding: 14px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        transition: background 0.3s;
     }
-    .profile-header img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 4px solid #007bff;
-        object-fit: cover;
+    .notification.unread {
+        background: #e6f0ff;
+        font-weight: bold;
     }
-    .profile-header .user-info {
-        flex-grow: 1;
+    .notif-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
-    .user-info h2 {
+    .notif-icon {
         font-size: 1.8rem;
-        margin-bottom: 5px;
     }
-    .user-info p {
+    .notif-text {
+        display: flex;
+        flex-direction: column;
+    }
+    .notif-title {
         font-size: 1rem;
+    }
+    .notif-time {
+        font-size: 0.8rem;
         color: gray;
     }
-
-    .profile-details {
-        margin-top: 20px;
+    .notif-actions button {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #ff0000;
     }
-    .detail-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 12px 0;
-        border-bottom: 1px solid #eee;
-    }
-    .detail-item span:first-child {
-        font-weight: bold;
-        color: #333;
-    }
-    .detail-item span:last-child {
-        color: #555;
+    .notif-actions button:hover {
+        transform: scale(1.2);
     }
 
     @media (max-width: 720px) {
         .container.shifted { margin-left: 0; }
         nav.sidebar { width: 220px; }
-        .profile-header { flex-direction: column; align-items: center; text-align: center; }
-        .user-info h2 { font-size: 1.5rem; }
     }
 </style>
 </head>
@@ -177,7 +196,6 @@
   <div class="site-title">Attendance System</div>
 </header>
 
-<!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
   <a href="home.html">HOME</a>
   <a href="profile.html">PROFILE</a>
@@ -188,25 +206,67 @@
   <button class="logout-btn" id="logoutBtn">LOG OUT</button>
 </nav>
 
-<!-- Profile Container -->
+<!-- Notifications Container -->
 <div class="container" id="contentArea">
-    <div class="profile-header">
-        <img src="https://via.placeholder.com/120" alt="Profile Picture">
-        <div class="user-info">
-            <h2>@username123</h2>
-            <p>Software Developer | Attendance System</p>
-        </div>
+    <!-- Action Buttons -->
+    <div class="actions">
+        <button class="mark-read" onclick="markAllRead()">Mark All as Read</button>
+        <button class="clear-all" onclick="clearAll()">Clear All</button>
     </div>
 
-    <div class="profile-details">
-        <div class="detail-item"><span>Full Name:</span><span>Bryan Ablao</span></div>
-        <div class="detail-item"><span>Birthdate:</span><span>January 1, 1995</span></div>
-        <div class="detail-item"><span>Gender:</span><span>Male</span></div>
-        <div class="detail-item"><span>Position:</span><span>Software Developer</span></div>
-        <div class="detail-item"><span>Department:</span><span>IT Department</span></div>
-        <div class="detail-item"><span>Email:</span><span>bryanablao@example.com</span></div>
-        <div class="detail-item"><span>Phone:</span><span>+63 912 345 6789</span></div>
-        <div class="detail-item"><span>Address:</span><span>Davao City, Philippines</span></div>
+    <!-- Notification Items -->
+    <div id="notifications">
+        <div class="notification unread">
+            <div class="notif-info">
+                <div class="notif-icon">⏰</div>
+                <div class="notif-text">
+                    <div class="notif-title">You logged in late today (9:15 AM)</div>
+                    <div class="notif-time">5 mins ago</div>
+                </div>
+            </div>
+            <div class="notif-actions">
+                <button onclick="removeNotif(this)">❌</button>
+            </div>
+        </div>
+
+        <div class="notification unread">
+            <div class="notif-info">
+                <div class="notif-icon">📋</div>
+                <div class="notif-text">
+                    <div class="notif-title">Your August attendance report is ready</div>
+                    <div class="notif-time">1 hour ago</div>
+                </div>
+            </div>
+            <div class="notif-actions">
+                <button onclick="removeNotif(this)">❌</button>
+            </div>
+        </div>
+
+        <div class="notification">
+            <div class="notif-info">
+                <div class="notif-icon">💼</div>
+                <div class="notif-text">
+                    <div class="notif-title">Payroll for August has been processed</div>
+                    <div class="notif-time">Yesterday</div>
+                </div>
+            </div>
+            <div class="notif-actions">
+                <button onclick="removeNotif(this)">❌</button>
+            </div>
+        </div>
+
+        <div class="notification">
+            <div class="notif-info">
+                <div class="notif-icon">📅</div>
+                <div class="notif-text">
+                    <div class="notif-title">Staff meeting scheduled on Sept 10, 2025</div>
+                    <div class="notif-time">2 days ago</div>
+                </div>
+            </div>
+            <div class="notif-actions">
+                <button onclick="removeNotif(this)">❌</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -231,6 +291,16 @@ logoutBtn.addEventListener('click', () => {
     window.location.href = "index.html";
   }
 });
+
+function removeNotif(btn) {
+    btn.closest('.notification').remove();
+}
+function markAllRead() {
+    document.querySelectorAll('.notification').forEach(n => n.classList.remove('unread'));
+}
+function clearAll() {
+    document.getElementById('notifications').innerHTML = '';
+}
 </script>
 
 </body>

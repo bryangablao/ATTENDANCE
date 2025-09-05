@@ -130,13 +130,16 @@
         border-radius: 8px;
         margin-bottom: 12px;
         cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         transition: background 0.3s;
     }
     .mail:hover { background: #eef4ff; }
     .mail.unread { font-weight: bold; background: #e6f0ff; }
+
+    .mail-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
     .mail-info {
         display: flex;
         flex-direction: column;
@@ -151,6 +154,16 @@
         cursor: pointer;
     }
     .delete-btn:hover { transform: scale(1.2); }
+
+    /* Expanded content */
+    .mail-body {
+        margin-top: 10px;
+        font-size: 0.95rem;
+        color: #333;
+        display: none;
+        line-height: 1.4;
+    }
+    .mail.open .mail-body { display: block; }
 
     @media (max-width: 720px) {
         .container.shifted { margin-left: 0; }
@@ -182,36 +195,63 @@
     <h2>Mailbox</h2>
 
     <div id="mails">
-        <div class="mail unread">
-            <div class="mail-info">
-                <div class="mail-title">HR: Your leave request has been approved</div>
-                <div class="mail-time">10 mins ago</div>
+        <div class="mail unread" onclick="toggleMail(this)">
+            <div class="mail-header">
+                <div class="mail-info">
+                    <div class="mail-title">HR: Your leave request has been approved</div>
+                    <div class="mail-time">10 mins ago</div>
+                </div>
+                <button class="delete-btn" onclick="event.stopPropagation(); deleteMail(this)">❌</button>
             </div>
-            <button class="delete-btn" onclick="deleteMail(this)">❌</button>
+            <div class="mail-body">
+                Dear Employee,<br><br>
+                Your recent leave request has been reviewed and approved by HR. Please ensure you file your attendance properly before and after your leave period.<br><br>
+                Regards,<br>HR Department
+            </div>
         </div>
 
-        <div class="mail unread">
-            <div class="mail-info">
-                <div class="mail-title">System Reminder: Attendance cutoff Sept 5, 2025</div>
-                <div class="mail-time">30 mins ago</div>
+        <div class="mail unread" onclick="toggleMail(this)">
+            <div class="mail-header">
+                <div class="mail-info">
+                    <div class="mail-title">System Reminder: Attendance cutoff Sept 5, 2025</div>
+                    <div class="mail-time">30 mins ago</div>
+                </div>
+                <button class="delete-btn" onclick="event.stopPropagation(); deleteMail(this)">❌</button>
             </div>
-            <button class="delete-btn" onclick="deleteMail(this)">❌</button>
+            <div class="mail-body">
+                Reminder: Please ensure all attendance logs are submitted and corrected before the cutoff date, Sept 5, 2025. Missing logs will not be counted in payroll.<br><br>
+                System Administrator
+            </div>
         </div>
 
-        <div class="mail">
-            <div class="mail-info">
-                <div class="mail-title">Payroll Department: Payslip available for August</div>
-                <div class="mail-time">Yesterday</div>
+        <div class="mail" onclick="toggleMail(this)">
+            <div class="mail-header">
+                <div class="mail-info">
+                    <div class="mail-title">Payroll Department: Payslip available for August</div>
+                    <div class="mail-time">Yesterday</div>
+                </div>
+                <button class="delete-btn" onclick="event.stopPropagation(); deleteMail(this)">❌</button>
             </div>
-            <button class="delete-btn" onclick="deleteMail(this)">❌</button>
+            <div class="mail-body">
+                Dear Employee,<br><br>
+                Your payslip for the month of August 2025 is now available in the payroll section of the Attendance System. Please review carefully and report discrepancies to Payroll within 3 working days.<br><br>
+                Payroll Department
+            </div>
         </div>
 
-        <div class="mail">
-            <div class="mail-info">
-                <div class="mail-title">HR: Staff meeting scheduled Sept 10, 2025</div>
-                <div class="mail-time">2 days ago</div>
+        <div class="mail" onclick="toggleMail(this)">
+            <div class="mail-header">
+                <div class="mail-info">
+                    <div class="mail-title">HR: Staff meeting scheduled Sept 10, 2025</div>
+                    <div class="mail-time">2 days ago</div>
+                </div>
+                <button class="delete-btn" onclick="event.stopPropagation(); deleteMail(this)">❌</button>
             </div>
-            <button class="delete-btn" onclick="deleteMail(this)">❌</button>
+            <div class="mail-body">
+                Attention all employees:<br><br>
+                A general staff meeting will be held on Sept 10, 2025 at 10:00 AM in the conference hall. Attendance is mandatory.<br><br>
+                Regards,<br>HR Team
+            </div>
         </div>
     </div>
 </div>
@@ -238,6 +278,13 @@ logoutBtn.addEventListener('click', () => {
   }
 });
 
+// Toggle Mail
+function toggleMail(mailElement) {
+    mailElement.classList.toggle('open');
+    mailElement.classList.remove('unread');
+}
+
+// Delete Mail
 function deleteMail(btn) {
     btn.closest('.mail').remove();
 }

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin Dashboard — Dark</title>
+<style>
+  :root{
+    --bg-1:#0b1020;
+    --bg-2:#0f1724;
+    --panel:#0e1726;
+    --muted:#9aa4b2;
+    --accent:#4f46e5;        /* indigo */
+    --accent-2:#06b6d4;      /* teal */
+    --danger:#ef4444;
+    --success:#10b981;
+    --glass: rgba(255,255,255,0.03);
+    --card-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body{
+    background: linear-gradient(180deg,var(--bg-1),var(--bg-2));
+    color:#e6eef8;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    display:flex; flex-direction:column;
+    min-height:100vh;
+  }
+
+  /* Header */
+  .topbar{
+    height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 20px;
+    background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(0,0,0,0.05));
+    border-bottom:1px solid rgba(255,255,255,0.03);
+    position:sticky; top:0; z-index:60;
+    backdrop-filter: blur(6px);
+  }
+  .brand {display:flex; gap:12px; align-items:center}
+  .logo{
+    width:36px; height:36px; border-radius:8px;
+    background:linear-gradient(135deg,var(--accent), #7c3aed);
+    display:grid; place-items:center; font-weight:700; color:#fff;
+    box-shadow: 0 6px 18px rgba(79,70,229,0.18);
+  }
+  .brand h1{font-size:1.05rem; margin:0; letter-spacing:0.4px}
+  .top-actions{display:flex; gap:10px; align-items:center}
+  .icon-btn{
+    background:transparent; border:1px solid rgba(255,255,255,0.04);
+    color:var(--muted); padding:8px 10px; border-radius:8px; cursor:pointer;
+  }
+  .icon-btn:hover{background:rgba(255,255,255,0.02); color:#fff}
+  .pill{
+    padding:8px 12px; border-radius:10px; background:linear-gradient(90deg,var(--accent), #7c3aed); color:#fff; border:none; cursor:pointer;
+  }
+  .avatar{
+    width:36px; height:36px; border-radius:50%; background:linear-gradient(90deg,#334155,#0f1724);
+    display:grid; place-items:center; font-weight:700; color:#cbd5e1; border:1px solid rgba(255,255,255,0.03);
+  }
+
+  /* Layout */
+  .app {
+    display:flex; flex:1; gap:18px; padding:18px; align-items:flex-start;
+  }
+  .sidebar{
+    width:260px; min-width:200px; background:var(--panel); border-radius:12px; padding:12px;
+    box-shadow:var(--card-shadow);
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .side-list{display:flex; flex-direction:column; gap:6px; margin-top:6px}
+  .nav-item{
+    color:var(--muted); padding:10px 12px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:10px;
+  }
+  .nav-item:hover{background:rgba(255,255,255,0.02); color:#fff}
+  .nav-item.active{background:linear-gradient(90deg,var(--accent), #7c3aed); color:#fff; box-shadow:0 6px 20px rgba(79,70,229,0.12)}
+
+  .main {
+    flex:1; display:flex; flex-direction:column; gap:16px;
+  }
+
+  /* Cards/sections */
+  .panel {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px; padding:14px; box-shadow:var(--card-shadow); border:1px solid rgba(255,255,255,0.03);
+  }
+
+  /* Users grid */
+  .users-grid{
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:14px;
+  }
+  .user-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));
+    border-radius:10px; padding:12px; display:flex; gap:10px; align-items:center; border:1px solid rgba(255,255,255,0.03);
+  }
+  .user-avatar{
+    width:56px; height:56px; min-width:56px; border-radius:10px; background:linear-gradient(90deg,#0ea5a4,#06b6d4);
+    display:grid; place-items:center; font-weight:700; color:#041124; font-size:1.05rem;
+  }
+  .user-meta{flex:1}
+  .user-meta h3{margin:0 0 6px 0; font-size:1rem}
+  .muted{color:var(--muted); font-size:0.88rem}
+  .role-badge{
+    display:inline-block; padding:6px 8px; border-radius:8px; font-size:0.8rem; color:#06123b; background:linear-gradient(90deg,#fff,#f3f4f6); font-weight:700;
+  }
+
+  .user-actions{
+    display:flex; flex-direction:column; gap:6px; min-width:110px; align-items:flex-end;
+  }
+  .btn{
+    padding:8px 10px; border-radius:8px; border:none; cursor:pointer; font-weight:700;
+  }
+  .btn.ghost{background:transparent; color:#cbd5e1; border:1px solid rgba(255,255,255,0.03)}
+  .btn.message{background:linear-gradient(90deg,var(--accent-2), #06b6d4); color:#02111a}
+  .btn.danger{background:linear-gradient(90deg,var(--danger), #ef4444); color:white}
+  .btn.warn{background:linear-gradient(90deg,#f59e0b,#f97316); color:#061124}
+
+  .status-chip{padding:6px 8px; border-radius:999px; font-weight:700; font-size:0.78rem; color:#041124}
+  .status-active{background:linear-gradient(90deg,#bbf7d0,#34d399)}
+  .status-muted{background:linear-gradient(90deg,#fde68a,#fca5a5)}
+  .status-banned{background:linear-gradient(90deg,#fca5a5,#f87171)}
+
+  /* top controls panel */
+  .top-panel{display:flex; justify-content:space-between; gap:12px; align-items:center}
+  .search-input{padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:#e6eef8; width:360px}
+  .controls-right{display:flex; gap:8px; align-items:center}
+
+  /* placeholder pages */
+  .placeholder{padding:18px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); min-height:220px}
+
+  /* modals */
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(2,6,23,0.6); display:none; align-items:center; justify-content:center; z-index:120;
+  }
+  .modal-backdrop.open{display:flex}
+  .modal-card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px; padding:18px; width: min(720px, 96%); max-height:90vh; overflow:auto; border:1px solid rgba(255,255,255,0.03)
+  }
+  .modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px}
+  .form-row{display:flex; gap:8px; margin-bottom:10px}
+  .input, .select, .textarea{
+    background:transparent; border:1px solid rgba(255,255,255,0.04); padding:10px 12px; border-radius:8px; color:#e6eef8; width:100%;
+  }
+  .textarea{min-height:120px; resize:vertical}
+  .modal-actions{display:flex; gap:8px; justify-content:flex-end; margin-top:12px}
+
+  /* small screens */
+  @media(max-width:900px){
+    .sidebar{width:210px}
+    .search-input{width:220px}
+  }
+  @media(max-width:700px){
+    .app{flex-direction:column; padding:12px}
+    .sidebar{width:100%; order:2; display:flex; overflow:auto}
+    .main{order:1}
+  }
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="brand">
+    <div class="logo">AD</div>
+    <div>
+      <div style="font-size:0.9rem; color:var(--muted)">Admin Panel</div>
+      <h1 style="margin:0; font-size:1.05rem">Control Center</h1>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:12px; align-items:center;">
+    <input id="globalSearch" class="search-input" placeholder="Search users / roles / notifications…" />
+    <div class="controls-right">
+      <button id="createNotifBtn" class="pill" title="Create notification">Create Notification</button>
+      <button id="sidebarToggle" class="icon-btn" title="Toggle sidebar">☰</button>
+      <div style="display:flex; align-items:center; gap:8px">
+        <button id="notifBell" class="icon-btn">🔔 <span id="notifCount" style="margin-left:8px; color:var(--muted)">3</span></button>
+        <div class="avatar">BA</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- App -->
+<div class="app" style="width:100%; max-width:1200px; margin:16px auto;">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div style="display:flex; justify-content:space-between; align-items:center">
+      <div style="font-weight:800; color:#fff">Admin</div>
+      <div style="color:var(--muted); font-size:0.85rem">v1.0</div>
+    </div>
+
+    <div class="side-list" role="navigation" aria-label="Admin menu">
+      <div class="nav-item active" data-page="dashboard">📊 Dashboard</div>
+      <div class="nav-item" data-page="users">👥 Users</div>
+      <div class="nav-item" data-page="notifications">🔔 Notifications</div>
+      <div class="nav-item" data-page="roles">🛡 Roles</div>
+      <div class="nav-item" data-page="settings">⚙️ Settings</div>
+    </div>
+
+    <div style="margin-top:auto; display:flex; gap:8px; align-items:center; justify-content:space-between">
+      <div style="color:var(--muted); font-size:0.85rem">Logged in as</div>
+      <div style="font-weight:700">Bryan (Admin)</div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- Top Controls -->
+    <div class="top-panel panel" style="align-items:center">
+      <div style="font-weight:700; font-size:1.05rem">Users</div>
+      <div style="display:flex; gap:8px; align-items:center">
+        <input id="filterRole" class="input" placeholder="Filter by role (e.g. Moderator, VIP 1)" style="width:220px" />
+        <button id="newUserBtn" class="btn message">+ Create user</button>
+      </div>
+    </div>
+
+    <!-- Content panels (switchable) -->
+    <div id="contentArea">
+
+      <!-- Dashboard Placeholder -->
+      <section id="page-dashboard" class="panel placeholder" style="display:none;">
+        <h2>Overview</h2>
+        <p class="muted">Summary metrics and quick actions will appear here.</p>
+      </section>
+
+      <!-- Users Page -->
+      <section id="page-users" class="panel" style="display:block;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+          <div>
+            <div style="font-weight:800; font-size:1.05rem">User Management</div>
+            <div class="muted" style="font-size:0.9rem">View user list, change roles, ban, mute and send messages</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center">
+            <select id="bulkRoleSelect" class="input" style="width:180px">
+              <option value="">Bulk assign role...</option>
+              <option>ADMIN</option><option>MODERATOR</option><option>SECURITY STAFF</option>
+              <option>VIP 1</option><option>VIP 2</option><option>VIP 3</option><option>MEMBER</option>
+            </select>
+            <button id="applyBulkRole" class="btn">Apply</button>
+          </div>
+        </div>
+
+        <div id="usersGrid" class="users-grid">
+          <!-- JS injects user cards here -->
+        </div>
+      </section>
+
+      <!-- Notifications page -->
+      <section id="page-notifications" class="panel placeholder" style="display:none;">
+        <h2>Notifications</h2>
+        <p class="muted">Create system notifications, schedule events, maintenance messages, etc.</p>
+        <div style="margin-top:12px">
+          <button id="openCreateNotif" class="btn message">+ New Notification</button>
+        </div>
+      </section>
+
+      <!-- Roles page -->
+      <section id="page-roles" class="panel placeholder" style="display:none;">
+        <h2>Roles</h2>
+        <p class="muted">Define roles and permissions. Default role: MEMBER</p>
+      </section>
+
+      <!-- Settings page -->
+      <section id="page-settings" class="panel placeholder" style="display:none;">
+        <h2>Settings</h2>
+        <p class="muted">System-wide settings and maintenance controls.</p>
+      </section>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Modals -->
+<!-- View Details -->
+<div id="modalView" class="modal-backdrop" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalViewTitle">
+    <div class="modal-head">
+      <h3 id="modalViewTitle">User Details</h3>
+      <button onclick="closeModal('modalView')" class="icon-btn">✕</button>
+    </div>
+
+    <div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:12px">
+      <div class="user-avatar" id="viewAvatar">BA</div>
+      <div style="flex:1">
+        <h2 id="viewName" style="margin:0">User Name</h2>
+        <div id="viewEmail" class="muted" style="margin:6px 0">email@example.com</div>
+        <div id="viewStatus" style="margin:6px 0"></div>
+        <div style="margin-top:8px">
+          <span class="muted">Role:</span>
+          <select id="viewRole" class="input" style="width:200px; display:inline-block; margin-left:8px">
+            <option>MEMBER</option><option>ADMIN</option><option>MODERATOR</option><option>SECURITY STAFF</option>
+            <option>VIP 1</option><option>VIP 2</option><option>VIP 3</option>
+          </select>
+          <button id="saveRoleBtn" class="btn" style="margin-left:8px">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h4 style="margin:0 0 8px 0">Activity</h4>
+      <div id="viewActivity" class="muted">Last login: —</div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal('modalView')">Close</button>
+      <button class="btn message" id="modalMsgBtn">Message</button>
+      <button class="btn warn" id="modalMuteBtn">Mute</button>
+      <button class="btn danger" id="modalBanBtn">Ban</button>
+    </div>
+  </div>
+</div>
+
+<!-- Message modal -->
+<div id="modalMessage" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Send Message</h3>
+      <button onclick="closeModal('modalMessage')" class="icon-btn">✕</button>
+    </div>
+    <div>
+      <div class="form-row"><input id="msgTo" class="input" placeholder="To (username)" /></div>
+      <div><textarea id="msgBody" class="textarea" placeholder="Message body"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal('modalMessage')">Cancel</button>
+      <button class="btn message" id="sendMessageBtn">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ban modal -->
+<div id="modalBan" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Ban User</h3>
+      <button onclick="closeModal('modalBan')" class="icon-btn">✕</button>
+    </div>
+    <div>
+      <div class="form-row">
+        <label style="min-width:140px" class="muted">Ban type</label>
+        <select id="banType" class="select" style="width:200px">
+          <option value="temporary">Temporary (N days)</option>
+          <option value="permanent">Permanent</option>
+        </select>
+      </div>
+      <div class="form-row" id="banDaysRow">
+        <label class="muted" style="min-width:140px">Days</label>
+        <input id="banDays" class="input" type="number" min="1" value="7" style="width:120px" />
+      </div>
+      <div class="form-row">
+        <label class="muted" style="min-width:140px">Reason</label>
+        <input id="banReason" class="input" placeholder="Optional reason" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal('modalBan')">Cancel</button>
+      <button class="btn danger" id="confirmBanBtn">Ban User</button>
+    </div>
+  </div>
+</div>
+
+<!-- Mute modal -->
+<div id="modalMute" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Mute User</h3>
+      <button onclick="closeModal('modalMute')" class="icon-btn">✕</button>
+    </div>
+    <div>
+      <div class="form-row">
+        <label class="muted" style="min-width:140px">Mute duration</label>
+        <select id="muteDuration" class="select" style="width:200px">
+          <option value="3600">1 hour</option>
+          <option value="86400">1 day</option>
+          <option value="604800">7 days</option>
+          <option value="0">Indefinite</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="muted" style="min-width:140px">Reason</label>
+        <input id="muteReason" class="input" placeholder="Optional reason" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal('modalMute')">Cancel</button>
+      <button class="btn warn" id="confirmMuteBtn">Mute</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Notification Modal -->
+<div id="modalCreateNotif" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Create Notification</h3>
+      <button onclick="closeModal('modalCreateNotif')" class="icon-btn">✕</button>
+    </div>
+    <div>
+      <div class="form-row">
+        <label class="muted" style="min-width:140px">Type</label>
+        <select id="notifType" class="select">
+          <option>System Update</option>
+          <option>Maintenance</option>
+          <option>Event</option>
+          <option>Custom</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="muted" style="min-width:140px">Title</label>
+        <input id="notifTitle" class="input" placeholder="Short title" />
+      </div>
+      <div class="form-row">
+        <label class="muted" style="min-width:140px">Message</label>
+        <textarea id="notifMessage" class="textarea" placeholder="Message details"></textarea>
+      </div>
+      <div class="form-row">
+        <label class="muted" style="min-width:140px">Recipients</label>
+        <select id="notifRecipients" class="select">
+          <option value="all">All users</option>
+          <option value="role:ADMIN">Admins</option>
+          <option value="role:MODERATOR">Moderators</option>
+          <option value="role:VIP1">VIP1</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal('modalCreateNotif')">Cancel</button>
+      <button class="btn message" id="createNotifConfirm">Send</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* -------------------------
+   Demo users
+   ------------------------- */
+const demoUsers = [
+  { id:'u01', name:'Bryan Ablao', username:'bryan', email:'bryan@example.com', role:'ADMIN', status:'active', muted:false, banned:false, lastLogin:'2025-08-31 03:12' },
+  { id:'u02', name:'Noir', username:'noir', email:'noir@example.com', role:'MEMBER', status:'active', muted:false, banned:false, lastLogin:'2025-08-31 01:02' },
+  { id:'u03', name:'Alice Wong', username:'alice', email:'alice@example.com', role:'MODERATOR', status:'active', muted:false, banned:false, lastLogin:'2025-08-30 21:14' },
+  { id:'u04', name:'John Dela Cruz', username:'john', email:'john@example.com', role:'VIP 1', status:'active', muted:false, banned:false, lastLogin:'2025-08-29 14:41' },
+  { id:'u05', name:'Mia Santos', username:'mia', email:'mia@example.com', role:'SECURITY STAFF', status:'active', muted:true, banned:false, lastLogin:'2025-08-28 10:10' },
+  { id:'u06', name:'Guest123', username:'guest123', email:'guest123@example.com', role:'MEMBER', status:'active', muted:false, banned:true, lastLogin:'2025-08-20 08:00' },
+];
+
+let users = demoUsers.slice(); // in-memory list
+
+/* -------------------------
+   Utility and UI functions
+   ------------------------- */
+
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
+
+function renderUsersGrid(filter='') {
+  const grid = $('#usersGrid');
+  grid.innerHTML = '';
+  const q = filter.trim().toLowerCase();
+  users.forEach(u => {
+    if (q && !(u.name.toLowerCase().includes(q) || u.username.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.role.toLowerCase().includes(q))) return;
+    const card = document.createElement('div');
+    card.className = 'user-card';
+    card.dataset.id = u.id;
+    card.innerHTML = `
+      <div class="user-avatar">${(u.name.split(' ').map(n=>n[0]).slice(0,2).join('') || 'U').toUpperCase()}</div>
+      <div class="user-meta">
+        <h3>${u.name}</h3>
+        <div class="muted">@${u.username} • ${u.email}</div>
+        <div style="margin-top:8px">
+          <span class="role-badge">${u.role}</span>
+          <span style="margin-left:8px" id="status-${u.id}">
+            ${u.banned ? '<span class="status-chip status-banned">BANNED</span>' : (u.muted ? '<span class="status-chip status-muted">MUTED</span>' : '<span class="status-chip status-active">ACTIVE</span>')}
+          </span>
+        </div>
+      </div>
+      <div class="user-actions">
+        <button class="btn ghost" data-action="view">View</button>
+        <button class="btn message" data-action="msg">Message</button>
+        <button class="btn warn" data-action="mute">${u.muted ? 'Unmute' : 'Mute'}</button>
+        <button class="btn danger" data-action="ban">${u.banned ? 'Unban' : 'Ban'}</button>
+      </div>
+    `;
+    // attach events
+    card.querySelector('[data-action="view"]').addEventListener('click', ()=>openViewModal(u.id));
+    card.querySelector('[data-action="msg"]').addEventListener('click', ()=>openMessageModal(u.id));
+    card.querySelector('[data-action="mute"]').addEventListener('click', ()=>openMuteModal(u.id));
+    card.querySelector('[data-action="ban"]').addEventListener('click', ()=>openBanModal(u.id));
+    grid.appendChild(card);
+  });
+}
+
+/* initial render */
+renderUsersGrid();
+
+/* -------------------------
+   Page nav
+   ------------------------- */
+$$('.nav-item').forEach(item=>{
+  item.addEventListener('click', ()=> {
+    $$('.nav-item').forEach(n=>n.classList.remove('active'));
+    item.classList.add('active');
+    const page = item.dataset.page;
+    // hide all pages
+    $('#page-dashboard').style.display = 'none';
+    $('#page-users').style.display = 'none';
+    $('#page-notifications').style.display = 'none';
+...

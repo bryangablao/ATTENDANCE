@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Department Details</title>
+  <link rel="icon" type="image/png" href="image/attendancelogo.png">
+  <style>
+    * { box-sizing: border-box; }
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+      color: #f0f0f0;
+      overflow-x: hidden;
+    }
+    body::before, body::after {
+      content: ''; position: fixed; border-radius: 50%; opacity: 0.15; filter: blur(100px); z-index: 0;
+    }
+    body::before { width: 300px; height: 300px; background: #ff6b6b; top: 20%; left: 10%; }
+    body::after { width: 400px; height: 400px; background: #ffd93b; bottom: 10%; right: 15%; }
+
+    /* HEADER */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; height: 60px;
+      background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);
+      display: flex; align-items: center; padding: 0 20px; z-index: 1100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .site-title {
+      flex-grow: 1; text-align: center; font-size: 1.5rem;
+      font-weight: 700; letter-spacing: 1.5px; color: #fff; user-select: none;
+    }
+
+    /* Hamburger */
+    .hamburger { width: 35px; height: 30px; cursor: pointer; display: flex;
+      flex-direction: column; justify-content: space-between; z-index: 1200; }
+    .hamburger div { height: 4px; background-color: white; border-radius: 2px; transition: all 0.3s ease; }
+    .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
+    .hamburger.active div:nth-child(2) { opacity: 0; }
+    .hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+
+    /* Sidebar */
+    nav.sidebar {
+      position: fixed; top: 60px; left: -270px; width: 270px; height: calc(100vh - 60px);
+      background: rgba(0, 0, 0, 0.85); box-shadow: 2px 0 12px rgba(0,0,0,0.7);
+      padding: 30px 20px; display: flex; flex-direction: column; gap: 20px;
+      transition: left 0.3s ease; z-index: 1099;
+      border-top-right-radius: 12px; border-bottom-right-radius: 12px;
+    }
+    nav.sidebar.open { left: 0; }
+    nav.sidebar a, nav.sidebar button.logout-btn {
+      text-decoration: none; color: #ddd; font-weight: 600; font-size: 1.15rem;
+      padding: 14px 20px; border-radius: 10px; transition: 0.3s;
+      cursor: pointer; background: transparent; border: none; text-align: left;
+    }
+    nav.sidebar a:hover, nav.sidebar button.logout-btn:hover {
+      background-color: #007bff; color: white; box-shadow: 0 0 8px #007bff;
+    }
+    nav.sidebar a.active {
+      background-color: #0056b3; color: white; box-shadow: 0 0 10px #0056b3;
+    }
+    nav.sidebar button.logout-btn { margin-top: auto; width: 100%; }
+
+    /* Content */
+    main.content {
+      margin: 80px auto 40px auto; max-width: 900px;
+      padding: 30px 40px; background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+      color: #2c3e50; transition: margin-left 0.3s ease;
+    }
+    main.content.shifted { margin-left: 270px; }
+
+    h1 { margin-top: 0; font-weight: 700; font-size: 2rem; margin-bottom: 15px; }
+    h2 { font-size: 1.4rem; margin-top: 25px; }
+    p { font-size: 1.1rem; line-height: 1.6; }
+
+    /* Back button */
+    .back-btn {
+      display: inline-block; margin-bottom: 15px; padding: 8px 14px;
+      background: #6c757d; color: white; border-radius: 8px; text-decoration: none;
+      font-weight: 600; transition: background 0.3s;
+    }
+    .back-btn:hover { background: #5a6268; }
+
+    /* Member list */
+    .member-list { margin-top: 20px; }
+    .member-card {
+      background: #f8f9fa; padding: 15px 20px; border-radius: 10px;
+      margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .member-info { display: flex; flex-direction: column; }
+    .member-info strong { font-size: 1.1rem; color: #333; }
+    .member-info span { font-size: 0.95rem; color: #666; }
+    .member-actions button {
+      margin-left: 8px; padding: 6px 12px; border: none; border-radius: 6px;
+      cursor: pointer; font-weight: 600; color: white;
+    }
+    .remove-btn { background: #dc3545; }
+    .remove-btn:hover { background: #b02a37; }
+
+    /* Buttons */
+    .btn {
+      background: #007bff; color: white; padding: 10px 16px; border: none;
+      border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600;
+      transition: background 0.3s; margin-top: 20px;
+    }
+    .btn:hover { background: #0056b3; }
+
+    /* Modal */
+    .modal {
+      display: none; position: fixed; z-index: 1300; left: 0; top: 0; width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center;
+    }
+    .modal-content {
+      background: white; padding: 25px; border-radius: 12px; width: 400px; max-width: 95%;
+      color: #333; position: relative;
+    }
+    .modal-content h2 { margin-top: 0; }
+    .modal-content label { display: block; margin-top: 10px; font-weight: 600; }
+    .modal-content input {
+      width: 100%; padding: 8px; margin-top: 6px; border: 1px solid #ccc; border-radius: 6px;
+    }
+    .modal-content button { margin-top: 15px; }
+    .close {
+      position: absolute; top: 12px; right: 16px; font-size: 22px; cursor: pointer; color: #666;
+    }
+    .close:hover { color: #000; }
+
+    @media (max-width: 720px) {
+      main.content.shifted { margin-left: 0; }
+      nav.sidebar { width: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
+  <div class="site-title">Department Details</div>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <a href="home.html">HOME</a>
+  <a href="profile.html">PROFILE</a>
+  <a href="payroll.html">PAYROLL</a>
+  <a href="friendlist.html">FRIENDLIST</a>
+  <a href="mailbox.html">MAILBOX</a>
+  <a href="notification.html">NOTIFICATION</a>
+  <a href="department.html" class="active">DEPARTMENT</a>
+  <button class="logout-btn" id="logoutBtn">LOG OUT</button>
+</nav>
+
+<main class="content" id="contentArea">
+  <a href="department.html" class="back-btn">← Back to Departments</a>
+  <h1 id="deptName">Customer Service Department</h1>
+  <p id="deptDesc">Handles customer inquiries, chat support, and feedback management.</p>
+
+  <h2>Members</h2>
+  <div class="member-list" id="memberList">
+    <div class="member-card">
+      <div class="member-info">
+        <strong>Jane Doe</strong>
+        <span>@janedoe – Supervisor</span>
+      </div>
+      <div class="member-actions">
+        <button class="remove-btn" onclick="removeMember(this)">Remove</button>
+      </div>
+    </div>
+    <div class="member-card">
+      <div class="member-info">
+        <strong>John Smith</strong>
+        <span>@johnsmith – Chat Support</span>
+      </div>
+      <div class="member-actions">
+        <button class="remove-btn" onclick="removeMember(this)">Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn" id="addMemberBtn">+ Add Member</button>
+</main>
+
+<!-- Add Member Modal -->
+<div id="addMemberModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('addMemberModal')">&times;</span>
+    <h2>Add Member</h2>
+    <label for="username">Username / Employee ID</label>
+    <input type="text" id="username" placeholder="Enter username or ID">
+
+    <label for="role">Department Role</label>
+    <input type="text" id="role" placeholder="e.g. Chat Support, HR Staff">
+
+    <button class="btn" onclick="addMember()">Done</button>
+  </div>
+</div>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const contentArea = document.getElementById('contentArea');
+
+// Toggle menu
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  sidebar.classList.toggle('open');
+  if(window.innerWidth > 720) contentArea.classList.toggle('shifted');
+});
+
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  if(confirm('Are you sure you want to logout?')) alert('Logging out...');
+});
+
+// Modal logic
+const addMemberBtn = document.getElementById('addMemberBtn');
+const addMemberModal = document.getElementById('addMemberModal');
+
+addMemberBtn.onclick = () => { addMemberModal.style.display = 'flex'; };
+function closeModal(id){ document.getElementById(id).style.display = 'none'; }
+
+function addMember(){
+  const username = document.getElementById('username').value.trim();
+  const role = document.getElementById('role').value.trim();
+  if(!username || !role){ alert('Please fill in all fields'); return; }
+  const memberList = document.getElementById('memberList');
+  const card = document.createElement('div');
+  card.classList.add('member-card');
+  card.innerHTML = `
+    <div class="member-info">
+      <strong>${username}</strong>
+      <span>@${username.toLowerCase()} – ${role}</span>
+    </div>
+    <div class="member-actions">
+      <button class="remove-btn" onclick="removeMember(this)">Remove</button>
+    </div>
+  `;
+  memberList.appendChild(card);
+  closeModal('addMemberModal');
+}
+
+function removeMember(btn){
+  if(confirm('Remove this member?')) btn.closest('.member-card').remove();
+}
+</script>
+</body>
+</html>

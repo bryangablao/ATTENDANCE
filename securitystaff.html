@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Staff Panel</title>
+  <link rel="icon" type="image/png" href="image/attendancelogo.png">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1d2671 0%, #c33764 100%);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 60px; background: rgba(0, 0, 0, 0.7);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; z-index: 1100;
+    }
+    .site-title { font-size: 1.5rem; font-weight: 700; color: #fff; }
+    .hamburger {
+      width: 35px; height: 30px; cursor: pointer;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .hamburger div {
+      height: 4px; background: white; border-radius: 2px; transition: 0.3s;
+    }
+    .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
+    .hamburger.active div:nth-child(2) { opacity: 0; }
+    .hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+    .help-btn { font-size: 1.5rem; font-weight: bold; color: white; cursor: pointer; }
+
+    /* Sidebar */
+    nav.sidebar {
+      position: fixed; top: 60px; left: -250px;
+      width: 250px; height: calc(100vh - 60px);
+      background: rgba(0, 0, 0, 0.85);
+      padding: 20px; display: flex; flex-direction: column; gap: 15px;
+      transition: left 0.3s ease; z-index: 1000;
+    }
+    nav.sidebar.open { left: 0; }
+    nav.sidebar a {
+      text-decoration: none; color: #ddd; font-weight: 600; font-size: 1.1rem;
+      padding: 12px 15px; border-radius: 8px; transition: 0.3s;
+    }
+    nav.sidebar a:hover { background: #007bff; color: white; }
+
+    /* Content */
+    .container { margin: 100px auto 40px auto; max-width: 1200px; padding: 20px; }
+    .page-title { font-size: 1.8rem; font-weight: bold; color: white; margin-bottom: 20px; text-align: center; }
+
+    /* User Cards */
+    .user-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .user-card {
+      background: #fff; padding: 20px; border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    }
+    .user-card h3 { font-size: 1.2rem; font-weight: bold; margin-bottom: 5px; cursor: pointer; color: #007bff; }
+    .user-card h3:hover { text-decoration: underline; }
+    .user-card p { margin-bottom: 12px; color: #555; }
+    .action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+    .action-buttons button {
+      flex: 1; padding: 8px; border: none; border-radius: 8px; cursor: pointer;
+      font-weight: 600; color: white; transition: 0.3s;
+    }
+    .kick-btn { background: #ff9800; }
+    .mute-btn { background: #607d8b; }
+    .msg-btn  { background: #4caf50; }
+    .kick-btn:hover { background: #e68900; }
+    .mute-btn:hover { background: #455a64; }
+    .msg-btn:hover  { background: #388e3c; }
+
+    /* Chat Panels */
+    .chat-panel {
+      background: #fff; margin: 30px 0; padding: 20px;
+      border-radius: 12px; box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    }
+    .chat-panel h3 { margin-bottom: 10px; }
+    .chat-box {
+      border: 1px solid #ccc; border-radius: 8px;
+      padding: 10px; height: 200px; overflow-y: auto;
+      margin-bottom: 10px; background: #f9f9f9;
+    }
+    .chat-message { margin: 5px 0; }
+    .chat-input { display: flex; gap: 10px; }
+    .chat-input input {
+      flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 8px;
+    }
+    .chat-input button {
+      padding: 8px 15px; border: none; border-radius: 8px;
+      background: #007bff; color: white; font-weight: bold; cursor: pointer;
+    }
+    .chat-input button:hover { background: #0056b3; }
+
+    /* Help Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1200;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center; align-items: center;
+    }
+    .modal-content {
+      background: #fff; padding: 20px; border-radius: 10px;
+      max-width: 600px; text-align: left;
+    }
+    .close { float: right; font-size: 20px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
+  <div class="site-title">Security Staff Panel</div>
+  <div class="help-btn" id="helpBtn">?</div>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <a href="home.html">HOME</a>
+  <a href="mailbox.html">MAILBOX</a>
+  <a href="profile.html">USERS</a>
+  <a href="index.html">LOGOUT</a>
+</nav>
+
+<div class="container">
+  <h2 class="page-title">Manage Users</h2>
+
+  <!-- Example User -->
+  <div class="user-grid">
+    <div class="user-card">
+      <h3 onclick="window.location.href='userprofile.html?id=1'">Alex Cruz</h3>
+      <p>@alexcruz</p>
+      <div class="action-buttons">
+        <button class="kick-btn">KICK</button>
+        <button class="mute-btn">MUTE</button>
+        <button class="msg-btn">MESSAGE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Staff HQ Chat -->
+  <div class="chat-panel">
+    <h3>Staff HQ (Admin + Moderators + Security Staff)</h3>
+    <div class="chat-box" id="staffChat"></div>
+    <div class="chat-input">
+      <input type="text" id="staffInput" placeholder="Type a message...">
+      <button onclick="sendMessage('staff')">Send</button>
+    </div>
+  </div>
+
+  <!-- VIP Lounge Chat -->
+  <div class="chat-panel">
+    <h3>VIP Lounge (VIPs + Security Staff)</h3>
+    <div class="chat-box" id="vipChat"></div>
+    <div class="chat-input">
+      <input type="text" id="vipInput" placeholder="Type a message...">
+      <button onclick="sendMessage('vip')">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div id="helpModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeHelp">&times;</span>
+    <h2>Security Staff Guide</h2>
+    <p><strong>Kick</strong>: Temporarily disconnect a user.</p>
+    <p><strong>Mute</strong>: Prevent a user from sending messages.</p>
+    <p><strong>Message</strong>: Communicate via group chats only.</p>
+    <ul>
+      <li><strong>Staff HQ</strong>: With Admin + Moderators + Security Staff.</li>
+      <li><strong>VIP Lounge</strong>: With VIPs + Security Staff.</li>
+    </ul>
+    <p><strong>Restrictions</strong>: Security Staff cannot ban, promote/demote, or send notifications.</p>
+  </div>
+</div>
+
+<script>
+  // Sidebar toggle
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    sidebar.classList.toggle('open');
+  });
+
+  // Help modal
+  const helpBtn = document.getElementById("helpBtn");
+  const helpModal = document.getElementById("helpModal");
+  const closeHelp = document.getElementById("closeHelp");
+
+  helpBtn.onclick = () => helpModal.style.display = "flex";
+  closeHelp.onclick = () => helpModal.style.display = "none";
+  window.onclick = (e) => { if (e.target === helpModal) helpModal.style.display = "none"; };
+
+  // Chat system
+  function sendMessage(type) {
+    let input, chatBox;
+    if (type === "staff") {
+      input = document.getElementById("staffInput");
+      chatBox = document.getElementById("staffChat");
+    } else {
+      input = document.getElementById("vipInput");
+      chatBox = document.getElementById("vipChat");
+    }
+
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const div = document.createElement("div");
+    div.className = "chat-message";
+    div.textContent = "You: " + msg;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    input.value = "";
+  }
+</script>
+
+</body>
+</html>

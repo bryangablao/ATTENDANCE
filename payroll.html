@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ATTENDANCE</title>
+<link rel="icon" type="image/png" href="image/attendancelogo.png">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+        min-height: 100vh;
+        overflow-x: hidden;
+        padding-bottom: 40px;
+    }
+
+    /* HEADER */
+    header {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 60px;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        z-index: 1100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .site-title {
+        flex-grow: 1;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        color: #fff;
+        user-select: none;
+    }
+
+    /* Hamburger */
+    .hamburger {
+        width: 35px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        z-index: 1200;
+    }
+    .hamburger div {
+        height: 4px;
+        background-color: white;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+    .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
+    .hamburger.active div:nth-child(2) { opacity: 0; }
+    .hamburger.active div:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+
+    /* Sidebar */
+    nav.sidebar {
+        position: fixed;
+        top: 60px;
+        left: -270px;
+        width: 270px;
+        height: calc(100vh - 60px);
+        background: rgba(0, 0, 0, 0.85);
+        box-shadow: 2px 0 12px rgba(0,0,0,0.7);
+        padding: 30px 20px 20px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        transition: left 0.3s ease;
+        z-index: 1099;
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+    nav.sidebar.open { left: 0; }
+    nav.sidebar a, nav.sidebar button.logout-btn {
+        text-decoration: none;
+        color: #ddd;
+        font-weight: 600;
+        font-size: 1.15rem;
+        padding: 14px 20px;
+        border-radius: 10px;
+        transition: background-color 0.3s, color 0.3s;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        text-align: left;
+        user-select: none;
+    }
+    nav.sidebar a:hover, nav.sidebar button.logout-btn:hover {
+        background-color: #007bff;
+        color: white;
+        box-shadow: 0 0 8px #007bff;
+    }
+    nav.sidebar a.active {
+        background-color: #0056b3;
+        color: white;
+        box-shadow: 0 0 10px #0056b3;
+    }
+    nav.sidebar button.logout-btn { margin-top: auto; width: 100%; }
+
+    /* Container */
+    .container {
+        background: #fff;
+        border-radius: 12px;
+        max-width: 1100px;
+        margin: 100px auto 30px auto;
+        padding: 25px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        transition: margin-left 0.3s ease;
+    }
+    .container.shifted { margin-left: 270px; }
+
+    h2, h3 { margin-bottom: 15px; color: #333; }
+
+    /* Employee Info */
+    .employee-info {
+        background: #f5f7ff;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display:flex;
+        gap:20px;
+        align-items:center;
+        justify-content:space-between;
+    }
+    .employee-info p { margin: 6px 0; font-size: 1rem; }
+
+    /* Timekeeping header controls */
+    .timekeeping-controls {
+        display:flex;
+        gap:12px;
+        align-items:center;
+        margin-bottom:12px;
+        flex-wrap:wrap;
+    }
+    .timekeeping-controls label { font-weight:600; color:#333; }
+    .timekeeping-controls select, .timekeeping-controls input[type="number"] {
+        padding:6px 8px;
+        border-radius:6px;
+        border:1px solid #ccc;
+        font-size:0.95rem;
+    }
+    .actions { margin-left:auto; }
+
+    /* Timekeeping table */
+    .tk-table {
+        width:100%;
+        border-collapse:collapse;
+        margin-top:10px;
+        overflow:auto;
+    }
+    .tk-table th, .tk-table td {
+        border:1px solid #ddd;
+        padding:8px;
+        text-align:center;
+        font-size:0.95rem;
+    }
+    .tk-table th {
+        background:#007bff;
+        color:white;
+        position:sticky;
+        top:0;
+        z-index:2;
+    }
+    .tk-table tbody tr:nth-child(even){ background:#fbfbfb; }
+    input[type="time"], input[type="number"].date-input, select.schedule-select {
+        padding:6px 8px;
+        border-radius:6px;
+        border:1px solid #bbb;
+        font-size:0.95rem;
+        width:100%;
+        box-sizing:border-box;
+    }
+    input[type="text"].time-text { width:100%; padding:6px; box-sizing:border-box; border-radius:6px; border:1px solid #bbb; text-align:center; }
+
+    .small-btn {
+        padding:6px 10px;
+        border-radius:6px;
+        border:none;
+        cursor:pointer;
+        background:#007bff;
+        color:white;
+        font-weight:600;
+    }
+    .small-btn.secondary { background:#6c757d; }
+
+    .payroll-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+    }
+    .payroll-table th, .payroll-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+    .payroll-table th {
+        background: #007bff;
+        color: white;
+    }
+    .payroll-table tr:nth-child(even) { background: #f9f9f9; }
+    .payroll-table button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 6px;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+    }
+
+    .note { margin-top:10px; color:#444; font-size:0.95rem; }
+
+    @media (max-width: 920px) {
+        .container { margin: 90px 8px; padding:16px; }
+        .tk-table th, .tk-table td { font-size:0.85rem; padding:6px; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hamburger" id="hamburger">
+    <div></div><div></div><div></div>
+  </div>
+  <div class="site-title">Payroll & Timekeeping</div>
+</header>
+
+<nav class="sidebar" id="sidebar">
+  <a href="home.html">HOME</a>
+  <a href="profile.html">PROFILE</a>
+  <a href="payroll.html" class="active">PAYROLL</a>
+  <a href="friendlist.html">FRIENDLIST</a>
+  <a href="mailbox.html">MAILBOX</a>
+  <a href="notification.html">NOTIFICATION</a>
+  <button class="logout-btn" id="logoutBtn">LOG OUT</button>
+</nav>
+
+<!-- Payroll Container -->
+<div class="container" id="contentArea">
+    <h2>Payroll & Time Keeping</h2>
+
+    <!-- Employee Info (modified) -->
+    <div class="employee-info">
+        <div>
+          <p><strong>Name:</strong> Bryan Ablao</p>
+          <p><strong>Department:</strong> Society Brands</p>
+          <p><strong>Position:</strong> BACKOFFICE</p>
+        </div>
+        <div style="text-align:right">
+          <p><strong>Employee ID:</strong> 000123</p>
+          <p style="color:#666; font-size:0.9rem;">Time Keeping Table below — edit dates & times</p>
+        </div>
+    </div>
+
+    <!-- Timekeeping header controls: Month / Year / Add Row -->
+    <div class="timekeeping-controls">
+        <label for="monthSelect">Month:</label>
+        <select id="monthSelect" aria-label="Month">
+            <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+            <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+            <option value="7">July</option><option value="8" selected>August</option><option value="9">September</option>
+            <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+        </select>
+
+        <label for="yearInput">Year:</label>
+        <input id="yearInput" type="number" value="2025" min="2000" max="2100" style="width:90px" />
+
+        <div class="actions">
+            <button class="small-btn" id="addRowBtn">Add Row</button>
+            <button class="small-btn secondary" id="autoFillBtn" title="Auto-generate 7 sample rows">Sample 7 rows</button>
+        </div>
+    </div>
+
+    <!-- Time Keeping Table -->
+    <div style="overflow:auto">
+    <table class="tk-table" id="timekeepingTable">
+        <thead>
+            <tr>
+                <th style="width:60px">Date</th>
+                <th>Scheduled Time</th>
+                <th>Check In</th>
+                <th>Break Out</th>
+                <th>Break In</th>
+                <th>Check Out</th>
+                <th>Status</th>
+                <th>Total Hours</th>
+                <th style="width:80px">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="tkBody">
+            <!-- rows inserted by JS -->
+        </tbody>
+    </table>
+    </div>
+
+    <p class="note">Notes: Scheduled time dropdown includes "PAID OFF", "NWNP" and "ABSENT". Times are editable. Status and Total Hours are computed automatically according to scheduled time, breaks and check times (late / undertime / overbreak / overtime / complete).</p>
+
+    <!-- Payroll History (unchanged, kept below) -->
+    <h3 style="margin-top:20px">Payroll History</h3>
+    <table class="payroll-table">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Basic Salary</th>
+                <th>Deductions</th>
+                <th>Net Pay</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>July 2025</td>
+                <td>₱30,000</td>
+                <td>₱1,800</td>
+                <td>₱31,200</td>
+                <td>Paid</td>
+                <td><button onclick="alert('Downloading July 2025 Payslip...')">Download</button></td>
+            </tr>
+            <tr>
+                <td>June 2025</td>
+                <td>₱30,000</td>
+                <td>₱2,100</td>
+                <td>₱30,900</td>
+                <td>Paid</td>
+                <td><button onclick="alert('Downloading June 2025 Payslip...')">Download</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+/*
+Timekeeping behavior summary:
+- Date: editable number input (1-31)
+- Scheduled Time: select with many options; value format "HH:MM-HH:MM" in 24h or special tokens (PAIDOFF, NWNP, ABSENT)
+- Check In/Break Out/Break In/Check Out: editable input type=time
+- Logic:
+  scheduled_work_minutes = 8 hours (480)
+  break baseline = 60 minutes
+  late_minutes = max(0, checkIn - scheduledStart)
+  undertime_minutes = max(0, scheduledEnd - checkOut)
+  break_extra = max(0, breakDuration - 60)
+  overtime_minutes = max(0, checkOut - scheduledEnd)
+  total_minutes = 480 - late - undertime - break_extra + floor(overtime_minutes/60)*60
+  status priority: if special tokens (PAIDOFF,NWNP,ABSENT) show that. Else:
+    if late -> "X mins. Late"
+    else if overbreak_extra -> "Overbreak X mins."
+    else if undertime -> "Undertime X mins."
+    else if overtime_hours > 0 -> "Overtime X hrs"
+    else -> "Complete"
+*/
+
+const scheduleOptions = [
+  {label:"12:00 AM - 9:00 AM", value:"00:00-09:00"},
+  {label:"1:00 AM - 10:00 AM", value:"01:00-10:00"},
+  {label:"2:00 AM - 11:00 AM", value:"02:00-11:00"},
+  {label:"3:00 AM - 12:00 PM", value:"03:00-12:00"},
+  {label:"4:00 AM - 1:00 PM", value:"04:00-13:00"},
+  {label:"5:00 AM - 2:00 PM", value:"05:00-14:00"},
+  {label:"6:00 AM - 3:00 PM", value:"06:00-15:00"},
+  {label:"7:00 AM - 4:00 PM", value:"07:00-16:00"},
+  {label:"8:00 AM - 5:00 PM", value:"08:00-17:00"},
+  {label:"9:00 AM - 6:00 PM", value:"09:00-18:00"},
+  {label:"10:00 AM - 7:00 PM", value:"10:00-19:00"},
+  {label:"11:00 AM - 8:00 PM", value:"11:00-20:00"},
+  {label:"12:00 PM - 9:00 PM", value:"12:00-21:00"},
+  {label:"1:00 PM - 10:00 PM", value:"13:00-22:00"},
+  {label:"2:00 PM - 11:00 PM", value:"14:00-23:00"},
+  {label:"3:00 PM - 12:00 AM", value:"15:00-24:00"},
+  {label:"4:00 PM - 1:00 AM", value:"16:00-01:00"},
+  {label:"5:00 PM - 2:00 AM", value:"17:00-02:00"},
+  {label:"6:00 PM - 3:00 AM", value:"18:00-03:00"},
+  {label:"7:00 PM - 4:00 AM", value:"19:00-04:00"},
+  {label:"8:00 PM - 5:00 AM", value:"20:00-05:00"},
+  {label:"9:00 PM - 6:00 AM", value:"21:00-06:00"},
+  {label:"10:00 PM - 7:00 AM", value:"22:00-07:00"},
+  {label:"11:00 PM - 8:00 AM", value:"23:00-08:00"},
+  {label:"PAID OFF", value:"PAIDOFF"},
+  {label:"NWNP", value:"NWNP"},
+  {label:"ABSENT", value:"ABSENT"}
+];
+
+const tkBody = document.getElementById('tkBody');
+const addRowBtn = document.getElementById('addRowBtn');
+const autoFillBtn = document.getElementById('autoFillBtn');
+
+function createScheduleSelect(selectedValue) {
+  const sel = document.createElement('select');
+  sel.className = 'schedule-select';
+  scheduleOptions.forEach(opt=>{
+    const o = document.createElement('option');
+    o.value = opt.value;
+    o.textContent = opt.label;
+    if(opt.value === selectedValue) o.selected = true;
+    sel.appendChild(o);
+  });
+  return sel;
+}
+
+function timeToMinutes(t) {
+  // t like "HH:MM" (24-hour) or null/empty -> returns minutes since 00:00
+  if(!t) return null;
+  // handle "24:00" as 24*60
+  if(t.startsWith("24:")) {
+    const parts=t.split(':');
+    return 24*60 + parseInt(parts[1]||0,10);
+  }
+  const [hh,mm] = t.split(':').map(x=>parseInt(x,10));
+  return hh*60 + mm;
+}
+
+function minutesToHHMM(mins) {
+  if(mins === null || isNaN(mins)) return '--:--';
+  const sign = mins < 0 ? '-' : '';
+  mins = Math.abs(mins);
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  const hh = String(h).padStart(1,'0');
+  const mm = String(m).padStart(2,'0');
+  return sign + hh + ':' + mm;
+}
+
+function formatHourMinutesLabel(mins) {
+  // show as H:MM (e.g., 8:00)
+  if(mins === null || isNaN(mins)) return '--:--';
+  const sign = mins<0?'-':'';
+  mins = Math.abs(mins);
+  const h = Math.floor(mins/60);
+  const m = mins%60;
+  return sign + h + ':' + String(m).padStart(2,'0');
+}
+
+function to12HourLabel(hm) {
+  // hm = "HH:MM" 24h -> "01:08 AM"
+  if(!hm) return '';
+  let [hh, mm] = hm.split(':').map(x=>parseInt(x,10));
+  if(hh === 24) hh = 0;
+  const ampm = hh >= 12 ? 'PM' : 'AM';
+  let h12 = hh % 12;
+  if(h12 === 0) h12 = 12;
+  return String(h12).padStart(2,'0') + ':' + String(mm).padStart(2,'0') + ' ' + ampm;
+}
+
+function createRow(data = {}) {
+  const tr = document.createElement('tr');
+
+  // Date column (editable numbers only)
+  const tdDate = document.createElement('td');
+  const dateInput = document.createElement('input');
+  dateInput.type = 'number';
+  dateInput.min = 1;
+  dateInput.max = 31;
+  dateInput.className = 'date-input';
+  dateInput.value = data.date || '';
+  tdDate.appendChild(dateInput);
+  tr.appendChild(tdDate);
+
+  // Scheduled Time select
+  const tdSched = document.createElement('td');
+  const schedSel = createScheduleSelect(data.scheduled || '08:00-17:00');
+  tdSched.appendChild(schedSel);
+  tr.appendChild(tdSched);
+
+  // time inputs: checkin, break out, break in, checkout (input type=time)
+  function makeTimeCell(value){
+    const td = document.createElement('td');
+    const t = document.createElement('input');
+    t.type = 'time';
+    if(value) t.value = value;
+    td.appendChild(t);
+    return {td, input: t};
+  }
+  const ci = makeTimeCell(data.checkin);
+  const bo = makeTimeCell(data.breakout);
+  const bi = makeTimeCell(data.breakin);
+  const co = makeTimeCell(data.checkout);
+
+  tr.appendChild(ci.td);
+  tr.appendChild(bo.td);
+  tr.appendChild(bi.td);
+  tr.appendChild(co.td);
+
+  // Status
+  const tdStatus = document.createElement('td');
+  tdStatus.textContent = '--';
+  tr.appendChild(tdStatus);
+
+  // Total Hours
+  const tdTotal = document.createElement('td');
+  tdTotal.textContent = '--:--';
+  tr.appendChild(tdTotal);
+
+  // Actions: compute now / remove
+  const tdAct = document.createElement('td');
+  const btnCompute = document.createElement('button');
+  btnCompute.type = 'button';
+  btnCompute.className = 'small-btn';
+  btnCompute.textContent = 'Compute';
+  const btnRemove = document.createElement('button');
+  btnRemove.type = 'button';
+  btnRemove.className = 'small-btn secondary';
+  btnRemove.textContent = 'Remove';
+  tdAct.appendChild(btnCompute);
+  tdAct.appendChild(btnRemove);
+  tr.appendChild(tdAct);
+
+  // append row
+  tkBody.appendChild(tr);
+
+  // compute function
+  function compute() {
+    const scheduledVal = schedSel.value;
+    // special tokens
+    if(scheduledVal === 'PAIDOFF' || scheduledVal === 'NWNP' || scheduledVal === 'ABSENT') {
+      tdStatus.textContent = scheduledVal.replace('PAIDOFF','PAID OFF');
+      tdTotal.textContent = '0:00';
+      return;
+    }
+
+    // parse scheduled start/end (handle midnight crossing)
+    let [sStart, sEnd] = scheduledVal.split('-');
+    // Some values like "15:00-24:00" or time where end < start -> treat as next day
+    const sStartMin = timeToMinutes(sStart);
+    let sEndMin = timeToMinutes(sEnd);
+    // If end lower than start or end is <= start treat as next day (add 24h)
+    if(sEndMin !== null && sEndMin <= sStartMin) sEndMin += 24*60;
+
+    // get times
+    const ciVal = ci.input.value || '';
+    const boVal = bo.input.value || '';
+    const biVal = bi.input.value || '';
+    const coVal = co.input.value || '';
+
+    const ciMinRaw = timeToMinutes(ciVal);
+    const boMinRaw = timeToMinutes(boVal);
+    const biMinRaw = timeToMinutes(biVal);
+    const coMinRaw = timeToMinutes(coVal);
+
+    // normalize times relative to scheduled start day: if a time is less than sStart, assume next day (add 24h)
+    function normalize(tMin) {
+      if(tMin === null) return null;
+      if(tMin < sStartMin) return tMin + 24*60;
+      return tMin;
+    }
+    const ciMin = normalize(ciMinRaw);
+    const boMin = normalize(boMinRaw);
+    const biMin = normalize(biMinRaw);
+    const coMin = normalize(coMinRaw);
+
+    // Baseline values
+    const scheduledWorkMinutes = 8 * 60; // 480
+    const baselineBreak = 60; // 60 min break
+
+    // If any critical times missing, we'll still attempt partial computations
+    // compute break duration if both BO and BI present
+    let breakDuration = 0;
+    if(boMin !== null && biMin !== null) {
+      breakDuration = Math.max(0, biMin - boMin);
+    } else {
+      // if missing, assume baselineBreak for computation fallback
+      breakDuration = baselineBreak;
+    }
+...

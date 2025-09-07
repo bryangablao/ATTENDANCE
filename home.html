@@ -4,15 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-  <!-- Favicons (works better across browsers/devices) -->
+  <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="image/attendancelogo.png?v=1">
   <link rel="icon" type="image/png" sizes="16x16" href="image/attendancelogo.png?v=1">
   <link rel="shortcut icon" href="image/attendancelogo.png?v=1">
+
   <title>ChronoPay</title>
 
-  <!-- Favicon / Logo -->
-  <link rel="icon" type="image/png" href="image/attendancelogo.png" />
- 
 <style>
   * { box-sizing: border-box; }
   body, html {
@@ -153,13 +151,13 @@
 </header>
 
 <nav class="sidebar" id="sidebar">
-  <a href="home.html">HOME</a>
-  <a href="profile.html">PROFILE</a>
-  <a href="payroll.html">PAYROLL</a>
-  <a href="friendlist.html">FRIENDLIST</a>
-  <a href="mailbox.html">MAILBOX</a>
-  <a href="notification.html">NOTIFICATION</a>
-  <a href="department.html">DEPARTMENT</a>
+  <a href="home.html" data-page="home">HOME</a>
+  <a href="profile.html" data-page="profile">PROFILE</a>
+  <a href="payroll.html" data-page="payroll">PAYROLL</a>
+  <a href="friendlist.html" data-page="friendlist">FRIENDLIST</a>
+  <a href="mailbox.html" data-page="mailbox">MAILBOX</a>
+  <a href="notification.html" data-page="notification">NOTIFICATION</a>
+  <a href="department.html" data-page="department">DEPARTMENT</a>
   <button class="logout-btn" id="logoutBtn">LOG OUT</button>
 </nav>
 
@@ -168,7 +166,25 @@
   <p>This is your dashboard where you can track attendance, manage payroll, and stay updated with notifications.</p>
 </main>
 
+<!-- Firebase SDK (v8) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCchBXnuc11KzkpG720IPtWb7Y1MKO0OTU",
+  authDomain: "chronopay-b4267.firebaseapp.com",
+  projectId: "chronopay-b4267",
+  storageBucket: "chronopay-b4267.firebasestorage.app",
+  messagingSenderId: "335594235253",
+  appId: "1:335594235253:web:48c2581cfaabb143731f3c",
+  measurementId: "G-GPY64CKF0Z"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
 const hamburger = document.getElementById('hamburger');
 const sidebar = document.getElementById('sidebar');
 const contentArea = document.getElementById('contentArea');
@@ -205,7 +221,6 @@ navLinks.forEach(link => {
     if (pageContents[page]) {
       contentArea.innerHTML = `<h1>${pageContents[page].title}</h1><p>${pageContents[page].content}</p>`;
     }
-    // Close menu only on small screens
     if(window.innerWidth <= 720) {
       hamburger.classList.remove('active');
       sidebar.classList.remove('open');
@@ -216,8 +231,16 @@ navLinks.forEach(link => {
 // Logout
 logoutBtn.addEventListener('click', () => {
   if (confirm('Are you sure you want to logout?')) {
-    alert('Logging out...');
-    // window.location.href = '/logout';
+    auth.signOut().then(() => {
+      window.location.href = "index.html";
+    });
+  }
+});
+
+// Auth check: redirect if not logged in
+auth.onAuthStateChanged(user => {
+  if (!user) {
+    window.location.href = "index.html";
   }
 });
 </script>

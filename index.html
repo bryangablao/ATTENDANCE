@@ -111,10 +111,10 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js"></script>
+  <!-- Firebase SDK (v8 for browser usage) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
     // Initialize Firebase
@@ -141,7 +141,7 @@
       const password = document.getElementById("password").value;
 
       try {
-        // Find user by username in Firestore
+        // Look up username in Firestore
         const querySnapshot = await db.collection("users").where("username", "==", username).get();
         if (querySnapshot.empty) {
           alert("Username not found!");
@@ -149,15 +149,13 @@
         }
 
         const userData = querySnapshot.docs[0].data();
-        const email = userData.email; // use email for Firebase Auth
+        const email = userData.email;
 
-        // Sign in with email & password
+        // Sign in with email/password
         await auth.signInWithEmailAndPassword(email, password);
 
         alert("Login successful!");
-        // Redirect or load dashboard
-        window.location.href = "dashboard.html"; // replace with your actual dashboard page
-
+        window.location.href = "home.html"; // Redirect to home page
       } catch (error) {
         console.error(error);
         alert(error.message);

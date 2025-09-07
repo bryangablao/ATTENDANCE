@@ -8,37 +8,59 @@
   <link rel="icon" type="image/png" sizes="32x32" href="image/attendancelogo.png?v=1">
   <link rel="icon" type="image/png" sizes="16x16" href="image/attendancelogo.png?v=1">
   <link rel="shortcut icon" href="image/attendancelogo.png?v=1">
-  
-  <title>Homepage - Register</title>
+
+  <title>Register - Attendance System</title>
 
   <style>
-    /* === ORIGINAL CSS KEPT INTACT === */
+    /* ORIGINAL CSS KEPT INTACT */
     * { box-sizing: border-box; }
-    body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; overflow-x: hidden; }
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333; overflow-x: hidden;
+    }
     body {
       background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
-      position: relative; min-height: 100vh; display: flex; justify-content: center; align-items: flex-start;
+      position: relative; min-height: 100vh;
+      display: flex; justify-content: center; align-items: flex-start;
       padding-top: 40px;
     }
     body::before, body::after {
-      content: ''; position: fixed; border-radius: 50%; opacity: 0.15; filter: blur(100px); z-index: 0;
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      opacity: 0.15;
+      filter: blur(100px);
+      z-index: 0;
     }
     body::before { width: 300px; height: 300px; background: #ff6b6b; top: 20%; left: 10%; }
     body::after { width: 400px; height: 400px; background: #ffd93b; bottom: 10%; right: 15%; }
+
     .container {
-      max-width: 400px; background: rgba(255, 255, 255, 0.95);
-      margin: 0 20px 40px 20px; padding: 30px 40px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      position: relative; z-index: 1;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.95);
+      margin: 0 20px 40px 20px;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      position: relative;
+      z-index: 1;
     }
     h1 { text-align: center; margin-bottom: 25px; color: #2c3e50; }
     form { display: flex; flex-direction: column; }
     label { margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
-    input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="date"] {
-      padding: 10px; margin-bottom: 18px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; transition: border-color 0.3s;
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="tel"],
+    input[type="date"] {
+      padding: 10px; margin-bottom: 18px; border-radius: 6px;
+      border: 1px solid #ccc; font-size: 1rem; transition: border-color 0.3s;
     }
     input:focus { border-color: #007bff; outline: none; }
     button {
-      padding: 12px; background-color: #007bff; border: none; border-radius: 6px; color: white; font-size: 1rem; cursor: pointer;
+      padding: 12px; background-color: #007bff; border: none;
+      border-radius: 6px; color: white; font-size: 1rem; cursor: pointer;
       margin-bottom: 20px; transition: background-color 0.3s;
     }
     button:hover { background-color: #0056b3; }
@@ -48,18 +70,25 @@
     .description { font-size: 1rem; color: #555; line-height: 1.5; border-top: 1px solid #eee; padding-top: 20px; }
 
     .phone-input { display: flex; margin-bottom: 18px; }
-    select.country-code { flex: 0 0 90px; border-radius: 6px 0 0 6px; border: 1px solid #ccc; border-right: none;
-      padding: 10px 8px; font-size: 1rem; background-color: white; cursor: pointer; transition: border-color 0.3s; height: 42px;
+    select.country-code {
+      flex: 0 0 90px; border-radius: 6px 0 0 6px; border: 1px solid #ccc; border-right: none;
+      padding: 10px 8px; font-size: 1rem; background-color: white; cursor: pointer;
+      transition: border-color 0.3s; height: 42px;
     }
-    input.local-number { flex: 1; border-radius: 0 6px 6px 0; border: 1px solid #ccc; border-left: none; padding: 10px 12px;
-      font-size: 1rem; height: 42px; box-sizing: border-box; transition: border-color 0.3s;
+    input.local-number {
+      flex: 1; border-radius: 0 6px 6px 0; border: 1px solid #ccc; border-left: none;
+      padding: 10px 12px; font-size: 1rem; height: 42px; box-sizing: border-box;
+      transition: border-color 0.3s;
     }
+
     .birthdate-gender { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
     .birthdate, .gender { flex: 1; display: flex; flex-direction: column; }
     .gender select, .birthdate input { padding: 10px; font-size: 1rem; border-radius: 6px; border: 1px solid #ccc; margin-top: 6px; cursor: pointer; transition: border-color 0.3s; }
+
     .name-fields { display: flex; justify-content: space-between; gap: 10px; }
     .name-fields input { flex: 1; }
     .capitalize { text-transform: uppercase; }
+
     @media (max-width: 450px) {
       .phone-input { flex-direction: column; }
       select.country-code, input.local-number { flex: none; width: 100%; border-radius: 6px; border-left: 1px solid #ccc; border-right: 1px solid #ccc; height: auto; margin-bottom: 10px; }
@@ -120,14 +149,11 @@
       <input type="password" id="password" name="password" placeholder="Create a password" required />
 
       <button type="submit">Register</button>
-
       <div class="links">
         <a href="index.html">Already have an account? Login</a>
       </div>
-
       <div class="description">
-        By registering for the Attendance System, you will be able to log in, track your attendance records, and manage your personal details.  
-        Please review our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> before signing up.
+        By registering, you can log in, track attendance, and manage your personal details. Review our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
       </div>
     </form>
   </div>
@@ -138,7 +164,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
-    // Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCchBXnuc11KzkpG720IPtWb7Y1MKO0OTU",
       authDomain: "chronopay-b4267.firebaseapp.com",
@@ -148,8 +173,8 @@
       appId: "1:335594235253:web:48c2581cfaabb143731f3c",
       measurementId: "G-GPY64CKF0Z"
     };
-    firebase.initializeApp(firebaseConfig);
 
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
@@ -188,7 +213,6 @@
         alert("Registration successful! You can now login.");
         registerForm.reset();
         window.location.href = "index.html";
-
       } catch (error) {
         console.error(error);
         alert(error.message);

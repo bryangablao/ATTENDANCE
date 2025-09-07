@@ -1,9 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-  <!-- Favicons (works better across browsers/devices) -->
+  <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="image/attendancelogo.png?v=1">
   <link rel="icon" type="image/png" sizes="16x16" href="image/attendancelogo.png?v=1">
   <link rel="shortcut icon" href="image/attendancelogo.png?v=1">
@@ -11,29 +12,19 @@
   <title>Homepage - Login</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    /* ORIGINAL CSS KEPT INTACT */
+    * { box-sizing: border-box; }
     body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
+      margin: 0; padding: 0; height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #333;
-      overflow-x: hidden;
+      color: #333; overflow-x: hidden;
     }
-
     body {
       background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      position: relative; min-height: 100vh;
+      display: flex; justify-content: center; align-items: flex-start;
       padding-top: 40px;
     }
-
     body::before, body::after {
       content: '';
       position: fixed;
@@ -42,22 +33,8 @@
       filter: blur(100px);
       z-index: 0;
     }
-
-    body::before {
-      width: 300px;
-      height: 300px;
-      background: #ff6b6b;
-      top: 20%;
-      left: 10%;
-    }
-
-    body::after {
-      width: 400px;
-      height: 400px;
-      background: #ffd93b;
-      bottom: 10%;
-      right: 15%;
-    }
+    body::before { width: 300px; height: 300px; background: #ff6b6b; top: 20%; left: 10%; }
+    body::after { width: 400px; height: 400px; background: #ffd93b; bottom: 10%; right: 15%; }
 
     .container {
       max-width: 400px;
@@ -71,105 +48,48 @@
     }
 
     h1 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #2c3e50;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
+      text-align: center; margin-bottom: 25px; color: #2c3e50;
+      display: flex; justify-content: center; align-items: center; gap: 10px;
     }
 
-    h1 img {
-      width: 32px;
-      height: 32px;
+    form { display: flex; flex-direction: column; }
+
+    label { margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; }
+
+    input[type="text"], input[type="password"] {
+      padding: 10px; margin-bottom: 18px; border-radius: 6px;
+      border: 1px solid #ccc; font-size: 1rem; transition: border-color 0.3s;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      margin-bottom: 6px;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    input[type="text"],
-    input[type="password"] {
-      padding: 10px;
-      margin-bottom: 18px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-
-    input[type="text"]:focus,
-    input[type="password"]:focus {
-      border-color: #007bff;
-      outline: none;
-    }
+    input:focus { border-color: #007bff; outline: none; }
 
     button {
-      padding: 12px;
-      background-color: #007bff;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-bottom: 15px;
-      transition: background-color 0.3s;
+      padding: 12px; background-color: #007bff; border: none;
+      border-radius: 6px; color: white; font-size: 1rem; cursor: pointer;
+      margin-bottom: 15px; transition: background-color 0.3s;
     }
+    button:hover { background-color: #0056b3; }
 
-    button:hover {
-      background-color: #0056b3;
-    }
+    .links { display: flex; justify-content: space-between; font-size: 0.9rem; }
+    .links a { color: #007bff; text-decoration: none; transition: text-decoration 0.2s; }
+    .links a:hover { text-decoration: underline; }
 
-    .links {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-    }
-
-    .links a {
-      color: #007bff;
-      text-decoration: none;
-      transition: text-decoration 0.2s;
-    }
-
-    .links a:hover {
-      text-decoration: underline;
-    }
-
-    .description {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-      font-size: 1rem;
-      color: #555;
-      line-height: 1.5;
-    }
+    .description { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 1rem; color: #555; line-height: 1.5; }
 
     @media(max-width: 450px) {
-      .container {
-        width: 90%;
-        padding: 20px;
-      }
+      .container { width: 90%; padding: 20px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Login</h1>
-    <form action="/login" method="POST">
+    <form id="loginForm">
       <label for="username">Username</label>
-      <input type="text" id="username" name="username" placeholder="Enter your username" required="">
+      <input type="text" id="username" name="username" placeholder="Enter your username" required>
 
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Enter your password" required="">
+      <input type="password" id="password" name="password" placeholder="Enter your password" required>
 
       <button type="submit">Login</button>
     </form>
@@ -191,5 +111,58 @@
     </div>
   </div>
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js"></script>
 
-</body></html>
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCchBXnuc11KzkpG720IPtWb7Y1MKO0OTU",
+      authDomain: "chronopay-b4267.firebaseapp.com",
+      projectId: "chronopay-b4267",
+      storageBucket: "chronopay-b4267.firebasestorage.app",
+      messagingSenderId: "335594235253",
+      appId: "1:335594235253:web:48c2581cfaabb143731f3c",
+      measurementId: "G-GPY64CKF0Z"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const loginForm = document.getElementById("loginForm");
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+
+      try {
+        // Find user by username in Firestore
+        const querySnapshot = await db.collection("users").where("username", "==", username).get();
+        if (querySnapshot.empty) {
+          alert("Username not found!");
+          return;
+        }
+
+        const userData = querySnapshot.docs[0].data();
+        const email = userData.email; // use email for Firebase Auth
+
+        // Sign in with email & password
+        await auth.signInWithEmailAndPassword(email, password);
+
+        alert("Login successful!");
+        // Redirect or load dashboard
+        window.location.href = "dashboard.html"; // replace with your actual dashboard page
+
+      } catch (error) {
+        console.error(error);
+        alert(error.message);
+      }
+    });
+  </script>
+</body>
+</html>

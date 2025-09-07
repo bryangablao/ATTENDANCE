@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
   <!-- Favicons -->
   <link rel="icon" type="image/png" sizes="32x32" href="image/attendancelogo.png?v=1">
   <link rel="icon" type="image/png" sizes="16x16" href="image/attendancelogo.png?v=1">
@@ -111,13 +111,12 @@
     </div>
   </div>
 
-  <!-- Firebase SDK (v8 for browser usage) -->
+  <!-- Firebase v8 SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
   <script>
-    // Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCchBXnuc11KzkpG720IPtWb7Y1MKO0OTU",
       authDomain: "chronopay-b4267.firebaseapp.com",
@@ -141,7 +140,7 @@
       const password = document.getElementById("password").value;
 
       try {
-        // Look up username in Firestore
+        // Search for user by username
         const querySnapshot = await db.collection("users").where("username", "==", username).get();
         if (querySnapshot.empty) {
           alert("Username not found!");
@@ -151,11 +150,12 @@
         const userData = querySnapshot.docs[0].data();
         const email = userData.email;
 
-        // Sign in with email/password
+        // Sign in using Firebase Auth
         await auth.signInWithEmailAndPassword(email, password);
 
         alert("Login successful!");
-        window.location.href = "home.html"; // Redirect to home page
+        window.location.href = "home.html";
+
       } catch (error) {
         console.error(error);
         alert(error.message);

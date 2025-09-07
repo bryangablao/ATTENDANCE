@@ -143,7 +143,7 @@ loginForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value;
 
   try {
-    // Query Firestore for username
+    // 🔍 1. Get user by username
     const usersRef = collection(db, "users");
     const q = query(usersRef, where("username", "==", username));
     const querySnapshot = await getDocs(q);
@@ -155,19 +155,26 @@ loginForm.addEventListener("submit", async (e) => {
       return;
     }
 
-    const userData = querySnapshot.docs[0].data();
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
     const email = userData.email;
 
-    // Sign in with email
+    // 🔑 2. Sign in with email/password
     await signInWithEmailAndPassword(auth, email, password);
+
+    // 🎯 3. Check role for redirect
+    let redirectPage = "home.html"; // default
+    if (userData.role === "ADMIN") {
+      redirectPage = "admin.html";
+    }
 
     messageBox.textContent = "✅ Login successful! Redirecting...";
     messageBox.className = "message success";
     messageBox.style.display = "block";
 
     setTimeout(() => {
-      window.location.href = "home.html";
-    }, 2000);
+      window.location.href = redirectPage;
+    }, 1500);
 
   } catch(error) {
     console.error(error);

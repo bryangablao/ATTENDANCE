@@ -3,60 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <!-- Favicons (works better across browsers/devices) -->
-  <link rel="icon" type="image/png" sizes="32x32" href="image/attendancelogo.png?v=1">
-  <link rel="icon" type="image/png" sizes="16x16" href="image/attendancelogo.png?v=1">
-  <link rel="shortcut icon" href="image/attendancelogo.png?v=1">
-<title>ChronoPay</title>
+  <title>ChronoPay - Profile</title>
+  <link rel="icon" type="image/png" href="image/attendancelogo.png?v=1">
 
-<style>
+  <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
-        min-height: 100vh;
-        overflow-x: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #6b73ff, #000dff);
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
     /* HEADER */
     header {
-        position: fixed;
-        top: 0; left: 0; right: 0;
-        height: 60px;
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(8px);
-        display: flex;
-        align-items: center;
-        padding: 0 20px;
-        z-index: 1100;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 1100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
     .site-title {
-        flex-grow: 1;
-        text-align: center;
-        font-size: 1.5rem;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        color: #fff;
-        user-select: none;
+      flex-grow: 1;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
     }
 
     /* Hamburger */
     .hamburger {
-        width: 35px;
-        height: 30px;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        z-index: 1200;
+      width: 35px;
+      height: 30px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 1200;
     }
     .hamburger div {
-        height: 4px;
-        background-color: white;
-        border-radius: 2px;
-        transition: all 0.3s ease;
+      height: 4px;
+      background-color: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
     }
     .hamburger.active div:nth-child(1) { transform: rotate(45deg) translate(7px, 7px); }
     .hamburger.active div:nth-child(2) { opacity: 0; }
@@ -64,114 +58,138 @@
 
     /* Sidebar */
     nav.sidebar {
-        position: fixed;
-        top: 60px;
-        left: -270px;
-        width: 270px;
-        height: calc(100vh - 60px);
-        background: rgba(0, 0, 0, 0.85);
-        box-shadow: 2px 0 12px rgba(0,0,0,0.7);
-        padding: 30px 20px 20px 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        transition: left 0.3s ease;
-        z-index: 1099;
-        border-top-right-radius: 12px;
-        border-bottom-right-radius: 12px;
+      position: fixed;
+      top: 60px;
+      left: -270px;
+      width: 270px;
+      height: calc(100vh - 60px);
+      background: rgba(0,0,0,0.85);
+      box-shadow: 2px 0 12px rgba(0,0,0,0.7);
+      padding: 30px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: left 0.3s ease;
+      z-index: 1099;
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
     }
     nav.sidebar.open { left: 0; }
     nav.sidebar a, nav.sidebar button.logout-btn {
-        text-decoration: none;
-        color: #ddd;
-        font-weight: 600;
-        font-size: 1.15rem;
-        padding: 14px 20px;
-        border-radius: 10px;
-        transition: background-color 0.3s, color 0.3s;
-        cursor: pointer;
-        background: transparent;
-        border: none;
-        text-align: left;
-        user-select: none;
+      text-decoration: none;
+      color: #ddd;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 14px 20px;
+      border-radius: 10px;
+      transition: background-color 0.3s, color 0.3s;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      text-align: left;
+      user-select: none;
     }
     nav.sidebar a:hover, nav.sidebar button.logout-btn:hover {
-        background-color: #007bff;
-        color: white;
-        box-shadow: 0 0 8px #007bff;
+      background-color: #007bff;
+      color: white;
+      box-shadow: 0 0 8px #007bff;
     }
     nav.sidebar a.active {
-        background-color: #0056b3;
-        color: white;
-        box-shadow: 0 0 10px #0056b3;
+      background-color: #0056b3;
+      color: white;
+      box-shadow: 0 0 10px #0056b3;
     }
     nav.sidebar button.logout-btn { margin-top: auto; width: 100%; }
 
     /* Profile Container */
     .container {
-        background: #fff;
-        border-radius: 12px;
-        max-width: 650px;
-        margin: 100px auto 30px auto;
-        padding: 30px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        transition: margin-left 0.3s ease;
+      background: #fff;
+      border-radius: 12px;
+      max-width: 850px;
+      margin: 90px auto 30px;
+      padding: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      transition: margin-left 0.3s ease;
     }
     .container.shifted { margin-left: 270px; }
 
+    /* Profile header */
     .profile-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
     }
-    .profile-header img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        border: 4px solid #000dff;
-        object-fit: cover;
+    .profile-pic {
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      border: 4px solid #000dff;
+      object-fit: cover;
+      cursor: pointer;
     }
-    .profile-header h2 {
-        margin: 0;
-        font-size: 1.6rem;
-        color: #333;
-    }
-
-    .profile-details {
-        margin-top: 15px;
-    }
-    .profile-details p {
-        font-size: 1rem;
-        margin: 10px 0;
-        color: #444;
-    }
-    .profile-details strong {
-        color: #000dff;
+    .profile-info h2 { margin: 0; font-size: 1.6rem; color: #333; }
+    .profile-info p { margin: 4px 0; color: #555; }
+    .role-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #000dff;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      margin-top: 6px;
     }
 
-    .edit-btn {
-        display: inline-block;
-        margin-top: 25px;
-        padding: 10px 20px;
-        background: #000dff;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-    .edit-btn:hover {
-        background: #4b5eff;
+    /* Details */
+    .profile-details { margin-top: 15px; }
+    .profile-details p { margin: 8px 0; }
+    .profile-details strong { color: #000dff; }
+
+    /* Bio */
+    .bio { margin-top: 20px; }
+    .bio textarea {
+      width: 100%; min-height: 80px;
+      resize: none; padding: 10px;
+      border-radius: 8px; border: 1px solid #ccc;
+      font-size: 1rem;
     }
 
-    @media (max-width: 720px) {
-        .container.shifted { margin-left: 0; }
-        nav.sidebar { width: 220px; }
-        .profile-header { flex-direction: column; text-align: center; }
+    /* Stats */
+    .stats {
+      display: flex; gap: 20px;
+      margin: 25px 0;
     }
-</style>
+    .stat-card {
+      flex: 1;
+      background: #f0f2ff;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-card h3 { margin: 0; color: #000dff; }
+    .stat-card p { margin: 5px 0 0; color: #444; }
+
+    /* Other sections */
+    .settings, .social-links, .badges, .privacy, .theme-picker {
+      margin-top: 20px;
+    }
+    .settings button {
+      display: block; margin: 8px 0; padding: 8px 15px;
+      border: none; border-radius: 6px;
+      background: #000dff; color: #fff; cursor: pointer;
+    }
+    .settings button:hover { background: #4b5eff; }
+    .social-links a { margin-right: 15px; font-size: 1.2rem; color: #000dff; text-decoration: none; }
+    .badges span {
+      display: inline-block;
+      padding: 6px 10px;
+      margin: 4px;
+      border-radius: 6px;
+      background: #eee;
+      font-size: 0.9rem;
+      color: #333;
+    }
+    .privacy label { display: flex; align-items: center; margin: 6px 0; gap: 10px; }
+  </style>
 </head>
 <body>
 
@@ -182,9 +200,10 @@
   <div class="site-title">Profile</div>
 </header>
 
+<!-- Sidebar -->
 <nav class="sidebar" id="sidebar">
   <a href="home.html">HOME</a>
-  <a href="profile.html">PROFILE</a>
+  <a href="profile.html" class="active">PROFILE</a>
   <a href="payroll.html">PAYROLL</a>
   <a href="friendlist.html">FRIENDLIST</a>
   <a href="mailbox.html">MAILBOX</a>
@@ -195,43 +214,155 @@
 
 <!-- Profile Content -->
 <div class="container" id="contentArea">
-    <div class="profile-header">
-        <img src="https://via.placeholder.com/100" alt="Profile Picture">
-        <h2>@username123</h2>
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <img src="ATTENDANCE/image/defaultprofile.png" alt="Profile Picture" class="profile-pic" id="profilePic">
+    <div class="profile-info">
+      <h2 id="fullName">Full Name</h2>
+      <p id="username">@username</p>
+      <span class="role-tag" id="roleTag">Employee</span>
     </div>
-    <div class="profile-details">
-        <p><strong>Full Name:</strong> John Doe</p>
-        <p><strong>Birthdate:</strong> January 15, 1995</p>
-        <p><strong>Gender:</strong> Male</p>
-        <p><strong>Department:</strong> IT Department</p>
-        <p><strong>Email:</strong> john.doe@example.com</p>
-        <p><strong>Employee ID:</strong> EMP-12345</p>
-    </div>
-    <button class="edit-btn" onclick="alert('Edit Profile feature coming soon!')">Edit Profile</button>
+  </div>
+
+  <!-- Details -->
+  <div class="profile-details">
+    <p><strong>Email:</strong> <span id="email">example@email.com</span></p>
+    <p><strong>Gender:</strong> <span id="gender">N/A</span></p>
+    <p><strong>Phone:</strong> <span id="phone">N/A</span></p>
+    <p><strong>Birthdate:</strong> <span id="birthdate">N/A</span></p>
+  </div>
+
+  <!-- Bio -->
+  <div class="bio">
+    <h3>Personal Bio</h3>
+    <textarea id="bio" maxlength="101" placeholder="Write something about yourself..."></textarea>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat-card"><h3 id="friendsCount">0</h3><p>Friends</p></div>
+    <div class="stat-card"><h3 id="messagesCount">0</h3><p>Messages</p></div>
+    <div class="stat-card"><h3 id="notifCount">0</h3><p>Notifications</p></div>
+  </div>
+
+  <!-- Settings -->
+  <div class="settings">
+    <h3>Settings</h3>
+    <button id="changePasswordBtn">Change Password</button>
+    <button id="changeEmailBtn">Change Email</button>
+    <button id="toggle2FABtn">Toggle 2FA</button>
+  </div>
+
+  <!-- Social Links -->
+  <div class="social-links">
+    <h3>Social Links</h3>
+    <a href="#">🌐</a>
+    <a href="#">🐦</a>
+    <a href="#">💼</a>
+  </div>
+
+  <!-- Badges -->
+  <div class="badges">
+    <h3>Achievements</h3>
+    <span>🎖 Starter</span>
+    <span>🏆 Top Employee</span>
+    <span>⭐ Reliable</span>
+  </div>
+
+  <!-- Privacy -->
+  <div class="privacy">
+    <h3>Privacy Options</h3>
+    <label><input type="checkbox" id="showEmail"> Show Email</label>
+    <label><input type="checkbox" id="showPhone"> Show Phone</label>
+  </div>
 </div>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
 <script>
-const hamburger = document.getElementById('hamburger');
-const sidebar = document.getElementById('sidebar');
-const contentArea = document.getElementById('contentArea');
-const logoutBtn = document.getElementById('logoutBtn');
+  const firebaseConfig = {
+    apiKey: "AIzaSyCchBXnuc11KzkpG720IPtWb7Y1MKO0OTU",
+    authDomain: "chronopay-b4267.firebaseapp.com",
+    projectId: "chronopay-b4267",
+    storageBucket: "chronopay-b4267.appspot.com",
+    messagingSenderId: "335594235253",
+    appId: "1:335594235253:web:48c2581cfaabb143731f3c"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const storage = firebase.storage();
 
-function toggleMenu() {
-  hamburger.classList.toggle('active');
-  sidebar.classList.toggle('open');
-  if(window.innerWidth > 720) {
-    contentArea.classList.toggle('shifted');
-  }
-}
-hamburger.addEventListener('click', toggleMenu);
+  // Hamburger toggle
+  const hamburger = document.getElementById('hamburger');
+  const sidebar = document.getElementById('sidebar');
+  const contentArea = document.getElementById('contentArea');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    sidebar.classList.toggle('open');
+    if (window.innerWidth > 720) contentArea.classList.toggle('shifted');
+  });
 
-// Logout
-logoutBtn.addEventListener('click', () => {
-  if (confirm('Are you sure you want to logout?')) {
-    window.location.href = "index.html";
-  }
-});
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    if (confirm('Are you sure you want to logout?')) {
+      auth.signOut().then(() => window.location.href = "index.html");
+    }
+  });
+
+  // Profile upload
+  const profilePic = document.getElementById('profilePic');
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+
+  profilePic.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) {
+      const user = auth.currentUser;
+      if (user) {
+        const storageRef = storage.ref('profiles/' + user.uid + '/profile.jpg');
+        storageRef.put(file).then(() => storageRef.getDownloadURL()).then(url => {
+          profilePic.src = url;
+          db.collection("users").doc(user.uid).update({ photoURL: url });
+        });
+      }
+    }
+  });
+
+  // Load profile data
+  auth.onAuthStateChanged(async user => {
+    if (user) {
+      const doc = await db.collection("users").doc(user.uid).get();
+      if (doc.exists) {
+        const data = doc.data();
+        document.getElementById('fullName').textContent = data.fullName || "Full Name";
+        document.getElementById('username').textContent = '@' + (data.username || "username");
+        document.getElementById('roleTag').textContent = data.role || "Employee";
+        document.getElementById('email').textContent = user.email;
+        document.getElementById('gender').textContent = data.gender || "N/A";
+        document.getElementById('phone').textContent = data.phone || "N/A";
+        document.getElementById('birthdate').textContent = data.birthdate || "N/A";
+        document.getElementById('bio').value = data.bio || "";
+        profilePic.src = data.photoURL || "ATTENDANCE/image/defaultprofile.png";
+      }
+    } else {
+      window.location.href = "index.html";
+    }
+  });
+
+  // Save bio live
+  document.getElementById('bio').addEventListener('input', e => {
+    const user = auth.currentUser;
+    if (user) {
+      db.collection("users").doc(user.uid).update({ bio: e.target.value });
+    }
+  });
 </script>
-
 </body>
 </html>

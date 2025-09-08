@@ -251,8 +251,8 @@ auth.onAuthStateChanged(async user => {
     try {
       const doc = await db.collection("users").doc(user.uid).get();
       if (doc.exists) {
-        const username = doc.data().username || "User";
-        welcomeMessage.textContent = `Welcome greetings for ${username}`;
+        const firstName = doc.data().firstName || "User";
+        welcomeMessage.textContent = `Welcome greetings for ${firstName}`;
       } else {
         welcomeMessage.textContent = "Welcome greetings!";
       }
